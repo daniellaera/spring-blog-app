@@ -1,5 +1,8 @@
-
 # Spring Blog Application
+
+[![Build Status](https://img.shields.io/github/workflow/status/daniellaera/spring-blog-app/CI)](https://github.com/daniellaera/spring-blog-app/actions)
+[![Test Status](https://img.shields.io/github/workflow/status/daniellaera/spring-blog-app/Test)](https://github.com/daniellaera/spring-blog-app/actions)
+[![Deploy Status](https://img.shields.io/github/workflow/status/daniellaera/spring-blog-app/Deploy)](https://github.com/daniellaera/spring-blog-app/actions)
 
 This Spring Boot application serves as a blog platform, allowing users to create, read, update, and delete blog posts. Key features include user authentication, post categorization, and support for database migrations.
 
