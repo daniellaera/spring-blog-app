@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    // main
+    // home
     @GetMapping
     public String home() {
         return "Welcome to Spring Boot Application !";
@@ -21,6 +21,12 @@ public class HelloController {
     // world
     @GetMapping("/world")
     public String world() {
-        return "World!";
+        return "World...";
+    }
+
+    // world
+    @GetMapping("/beppe")
+    public String beppe() {
+        return "Beppe!...";
     }
 }
