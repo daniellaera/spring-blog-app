@@ -25,6 +25,7 @@ jobs:
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - uses: actions/checkout@v3
