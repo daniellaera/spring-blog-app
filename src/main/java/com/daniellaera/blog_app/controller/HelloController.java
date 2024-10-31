@@ -6,19 +6,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    // hello
+    // main
     @GetMapping
     public String home() {
-        return "Welcome to Spring Boot Application";
+        return "Welcome to Spring Boot Application !";
     }
 
+    // hello
     @GetMapping("/hello")
     public String hello() {
-        return "Hello";
+        return "Hello...";
     }
 
+    // world
     @GetMapping("/world")
     public String world() {
-        return "World";
+        return "World!";
     }
 }
