@@ -37,15 +37,3 @@ jobs:
       - name: Deploy Spring Boot App
         run: |
           flyctl deploy --remote-only
-  badges:
-    name: Badge Generation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate Badges
-        uses: 3nity/ci-badges@v1
-        with:
-          repo: ${{ github.repository }}
-          workflow: main.yml
-          jobs: |
-            test
-            deploy

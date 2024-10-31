@@ -1,8 +1,6 @@
 # Spring Blog Application
 
-![Build Workflow](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml/badge.svg)
-![Test Status](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml/badge.svg?job=test)
-![Deploy Status](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml/badge.svg?job=deploy)
+![Main Workflow](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml/badge.svg)
 
 This Spring Boot application serves as a blog platform, allowing users to create, read, update, and delete blog posts. Key features include user authentication, post categorization, and support for database migrations.
 
