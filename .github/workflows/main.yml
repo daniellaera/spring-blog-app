@@ -22,6 +22,29 @@ jobs:
 
       - name: Build and Test with Maven
         run: mvn clean test  # Run your tests
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: test  # This job depends on the test job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'  # Specify Java version 21
+          distribution: 'temurin'  # Using Temurin distribution
+          cache: maven
+
+      - name: Generate JaCoCo Report
+        run: mvn jacoco:report  # Generate the coverage report
+
+      - name: Upload JaCoCo Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/index.html  # Adjust this path if necessary
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
