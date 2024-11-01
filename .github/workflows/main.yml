@@ -23,9 +23,9 @@ jobs:
       - name: Build, Test, and Generate Coverage
         run: mvn clean verify
 
-      - name: Check for JaCoCo Reports
+      - name: Check for JaCoCo XML Report
         run: |
-          if [ -f $GITHUB_WORKSPACE/target/site/jacoco/jacoco.xml ]; then
+          if [ -f target/site/jacoco/jacoco.xml ]; then
             echo "JaCoCo XML report found."
           else
             echo "JaCoCo XML report not found!"
@@ -36,19 +36,29 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: jacoco-report
-          path: $GITHUB_WORKSPACE/target/site/jacoco
+          path: target/site/jacoco
 
       - name: Parse JaCoCo Coverage
         id: parse-coverage
         run: |
-          # Install xmlstarlet for parsing XML
+          # Install xmlstarlet for XML parsing
           sudo apt-get update
           sudo apt-get install -y xmlstarlet
           
-          # Parse the coverage percentage from the JaCoCo XML report
-          COVERAGE=$(xmlstarlet sel -t -v "//report/sources/source[@type='COMPLEXITY']/@line" $GITHUB_WORKSPACE/target/site/jacoco/jacoco.xml)
-          echo "Coverage: $COVERAGE"
-          echo "coverage=$COVERAGE" >> $GITHUB_ENV
+          # Extract coverage percentage
+          COVERAGE=$(xmlstarlet sel -t -v "//report//line[@type='COMPLEXITY']/@covered" target/site/jacoco/jacoco.xml)
+          TOTAL=$(xmlstarlet sel -t -v "//report//line[@type='COMPLEXITY']/@missed" target/site/jacoco/jacoco.xml)
+          
+          if [ -z "$TOTAL" ] || [ "$TOTAL" -eq 0 ]; then
+            echo "No lines found in the report."
+            exit 1
+          fi
+
+          # Calculate coverage percentage
+          COVERAGE_PERCENTAGE=$((COVERAGE * 100 / (COVERAGE + TOTAL)))
+
+          echo "Coverage Percentage: $COVERAGE_PERCENTAGE"
+          echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_ENV
 
   coverage:
     name: Code Coverage
@@ -69,11 +79,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: jacoco-report
-          path: $GITHUB_WORKSPACE/target/site/jacoco
+          path: target/site/jacoco
 
       - name: Display Coverage Percentage
         run: |
-          echo "JaCoCo coverage percentage: ${{ env.coverage }}"
+          echo "JaCoCo coverage percentage: ${{ env.coverage }}%"
 
   deploy:
     name: Deploy App
