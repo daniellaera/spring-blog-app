@@ -23,11 +23,14 @@ jobs:
       - name: Build, Test, and Generate Coverage
         run: mvn clean verify
 
-      - name: Upload JaCoCo Coverage Report for Debugging
+      - name: Verify JaCoCo CSV Output
+        run: ls -l target/site/jacoco/jacoco.csv
+
+      - name: Upload JaCoCo Coverage Report
         uses: actions/upload-artifact@v3
         with:
-          name: jacoco-debug
-          path: target/site/jacoco  # Uploads the JaCoCo directory for debugging in coverage job
+          name: jacoco-report
+          path: target/site/jacoco
 
   coverage:
     name: Code Coverage
@@ -37,17 +40,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
-
       - name: Download JaCoCo Coverage Report
         uses: actions/download-artifact@v3
         with:
-          name: jacoco-debug  # Downloads the JaCoCo report generated in the test job
+          name: jacoco-report
 
       - name: Generate Coverage Badge
         uses: cicirello/jacoco-badge-generator@v2
