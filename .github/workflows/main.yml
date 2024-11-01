@@ -2,7 +2,7 @@ name: Deploy Spring Boot App
 
 on:
   push:
-    branches: [ main ]  # Adjust as needed for your branch strategy
+    branches: [ main ]  # Specify the branches that trigger the workflow
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}  # Token for Fly.io
@@ -38,16 +38,19 @@ jobs:
         id: generate_badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          paths: target/site/jacoco/jacoco.xml  # Path to the JaCoCo XML report
-          output: .github/badges/jacoco.json     # Output path for the badge JSON
-          generate-branches-badge: true           # Generate branch coverage badge
+          jacoco-csv-file: target/site/jacoco/jacoco.xml  # Correct input for JaCoCo report
+          badges-directory: .github/badges                 # Directory to save badges
+          generate-coverage-badge: true                     # Generate coverage badge
+          generate-branches-badge: true                     # Generate branches badge
 
       - name: Commit and Push Badge
-        uses: EndBug/add-and-commit@v6  # Use the correct version
+        uses: EndBug/add-and-commit@v6
         with:
-          default_author: github_actions
+          author_name: github-actions[bot]                 # Use the GitHub Actions bot as the author
+          author_email: github-actions[bot]@users.noreply.github.com  # Default email for GitHub Actions bot
           message: 'Update JaCoCo badge'
-          add: .github/badges/*.svg  # Add all SVG badges in the directory
+          add: .github/badges/*.svg                         # Add all badge SVGs to commit
+          token: ${{ secrets.GITHUB_TOKEN }}                # Use the GITHUB_TOKEN for pushing changes
 
   deploy:
     name: Deploy App
