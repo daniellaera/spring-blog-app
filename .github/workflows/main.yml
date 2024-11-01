@@ -23,8 +23,14 @@ jobs:
       - name: Build, Test, and Generate Coverage
         run: mvn clean verify
 
-      - name: Verify JaCoCo CSV Output
-        run: ls -l target/site/jacoco/jacoco.csv
+      - name: Check for JaCoCo Reports
+        run: |
+          if [ -f target/site/jacoco/jacoco.csv ]; then
+            echo "JaCoCo report found."
+          else
+            echo "JaCoCo report not found!"
+            exit 1
+          fi
 
       - name: Upload JaCoCo Coverage Report
         uses: actions/upload-artifact@v3

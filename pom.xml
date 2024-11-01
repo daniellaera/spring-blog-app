@@ -88,7 +88,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.12</version><!-- Use a stable version -->
+				<version>0.8.12</version>
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>
@@ -98,7 +98,6 @@
 					</execution>
 					<execution>
 						<id>default-report</id>
-						<phase>verify</phase> <!-- Ensure it's tied to the verify phase -->
 						<goals>
 							<goal>report</goal>
 						</goals>
