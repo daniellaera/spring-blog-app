@@ -3,7 +3,7 @@
 [![Deploy Spring Boot App](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml/badge.svg)](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml)
 ![Coverage](https://raw.githubusercontent.com/daniellaera/spring-blog-app/badges/badges/jacoco.svg)
 
-This Spring Boot application serves as a blog platform, allowing users to create, read, update, and delete blog posts. Key features include user authentication, post categorization, and support for database migrations.
+This Spring Boot application serves as a blog platform, allowing users to create, read, update, and delete blog posts. The user can also comment each post.
 
 ## Table of Contents
 

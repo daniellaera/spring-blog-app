@@ -1,5 +1,6 @@
 package com.daniellaera.blog_app.controller;
 
+import com.daniellaera.blog_app.dto.CommentDTO;
 import com.daniellaera.blog_app.dto.PostDTO;
 import com.daniellaera.blog_app.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,6 +69,50 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$[0].title").value("title"))
                 .andExpect(jsonPath("$[0].content").value("content"));
+
+        verify(postService, times(1)).getAllPosts();
+    }
+
+    @Test
+    void getPostsWithComments() throws Exception {
+        PostDTO post1 = new PostDTO();
+        post1.setTitle("title");
+        post1.setContent("content");
+
+        CommentDTO comment1 = new CommentDTO();
+        comment1.setText("First comment");
+        CommentDTO comment2 = new CommentDTO();
+        comment2.setText("Second comment");
+        post1.setComments(Arrays.asList(comment1, comment2));
+
+        PostDTO post2 = new PostDTO();
+        post2.setTitle("title2");
+        post2.setContent("content2");
+
+        CommentDTO comment3 = new CommentDTO();
+        comment3.setText("Another comment");
+        post2.setComments(List.of(comment3));
+
+        List<PostDTO> posts = Arrays.asList(post1, post2);
+        given(postService.getAllPosts()).willReturn(posts);
+
+        String reqBody = new ObjectMapper().writeValueAsString(posts);
+
+        mockMvc.perform(get("/api/v3/post")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(reqBody))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].title").value("title"))
+                .andExpect(jsonPath("$[0].content").value("content"))
+                .andExpect(jsonPath("$[0].comments.length()").value(2))
+                .andExpect(jsonPath("$[0].comments[0].text").value("First comment"))
+                .andExpect(jsonPath("$[0].comments[1].text").value("Second comment"))
+                .andExpect(jsonPath("$[1].title").value("title2"))
+                .andExpect(jsonPath("$[1].content").value("content2"))
+                .andExpect(jsonPath("$[1].comments.length()").value(1))
+                .andExpect(jsonPath("$[1].comments[0].text").value("Another comment"));
 
         verify(postService, times(1)).getAllPosts();
     }

@@ -68,8 +68,26 @@ public class PostServiceImpl implements PostService {
         return commentDTO;
     }
 
+    private Comment convertCommentDtoToCommentEntity(CommentDTO commentDTO) {
+        Comment comment = new Comment();
+        comment.setText(commentDTO.getText());
+        return comment;
+    }
+
     private Post convertToEntity(PostDTO postDTO) {
         Post post = new Post();
+
+        List<Comment> comments = Optional.ofNullable(postDTO.getComments())
+                .orElse(List.of())
+                .stream()
+                .map(commentDTO -> {
+                    Comment comment = convertCommentDtoToCommentEntity(commentDTO);
+                    comment.setPost(post);
+                    return comment;
+                })
+                .toList();
+        post.setComments(comments);
+
         post.setContent(postDTO.getContent());
         post.setTitle(postDTO.getTitle());
         return post;
