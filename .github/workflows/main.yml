@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write  # Grant write permissions to the actions
+
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}  # Token for Fly.io
 
