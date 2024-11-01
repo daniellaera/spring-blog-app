@@ -32,7 +32,7 @@ jobs:
             target/site/jacoco/index.html
 
       - name: Generate JaCoCo Badge
-        uses: Kmoch/jacoco-badge-generator@v1
+        uses: cicirello/jacoco-badge-generator@v2  # Updated to the correct action
         with:
           paths: target/site/jacoco/jacoco.xml  # Path to the JaCoCo XML report
           output: .github/badges/jacoco.json
