@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}  # Token for Fly.io
 
 jobs:
   build-and-test:
@@ -23,30 +23,24 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
-        run: mvn -B clean test  # Ensure to clean and run tests
+      - name: Build and Test
+        run: mvn clean verify
+
+      - name: Upload JaCoCo Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: |
+            target/site/jacoco/jacoco.xml
+            target/site/jacoco/index.html
 
       - name: Generate JaCoCo Badge
-        id: jacoco
+        id: generate_badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
+          paths: target/site/jacoco/jacoco.xml
+          output: .github/badges/jacoco.json
           generate-branches-badge: true
-          jacoco-csv-file: target/site/jacoco/jacoco.csv  # Ensure this path is correct
-
-      - name: Log coverage percentage
-        run: |
-          echo "Coverage = ${{ steps.jacoco.outputs.coverage }}"
-          echo "Branch Coverage = ${{ steps.jacoco.outputs.branches }}"
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          title: 'Update JaCoCo badge'
-          body: 'This pull request updates the JaCoCo badge based on the latest coverage report.'
-          base: main
-          branch: create-pull-request/patch  # Use a descriptive branch name
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use the automatically generated token
-          commit-message: '[create-pull-request] automated change'
 
   deploy:
     name: Deploy App
@@ -58,7 +52,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Fly CLI
-        uses: superfly/flyctl-actions/setup-flyctl@v1  # Specify the version tag for stability
+        uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy Spring Boot App
         run: |
