@@ -2,7 +2,7 @@ name: Deploy Spring Boot App
 
 on:
   push:
-    branches: [ main ]  # Specify the branches that trigger the workflow
+    branches: [ main ]  # Trigger on pushes to the main branch
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}  # Token for Fly.io
@@ -35,21 +35,28 @@ jobs:
             target/site/jacoco/index.html
 
       - name: Generate JaCoCo Badge
-        id: generate_badge
+        id: jacoco
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          jacoco-csv-file: target/site/jacoco/jacoco.xml  # Correct input for JaCoCo report
+          jacoco-csv-file: target/site/jacoco/jacoco.xml  # Path to JaCoCo report
           badges-directory: .github/badges                 # Directory to save badges
           generate-coverage-badge: true                     # Generate coverage badge
           generate-branches-badge: true                     # Generate branches badge
+          coverage-label: "Coverage"                        # Label for coverage badge
+          branches-label: "Branches"                        # Label for branches badge
+
+      - name: Log coverage percentage
+        run: |
+          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
+          echo "branch coverage = ${{ steps.jacoco.outputs.branches }}"
 
       - name: Commit and Push Badge
-        uses: EndBug/add-and-commit@v6
+        uses: EndBug/add-and-commit@v7  # Update to the latest version
         with:
-          author_name: github-actions[bot]                 # Use the GitHub Actions bot as the author
-          author_email: github-actions[bot]@users.noreply.github.com  # Default email for GitHub Actions bot
+          author_name: github-actions[bot]
+          author_email: github-actions[bot]@users.noreply.github.com
           message: 'Update JaCoCo badge'
-          add: .github/badges/*.svg                         # Add all badge SVGs to commit
+          add: .github/badges/*.svg
           token: ${{ secrets.GITHUB_TOKEN }}                # Use the GITHUB_TOKEN for pushing changes
 
   deploy:
