@@ -31,17 +31,11 @@ jobs:
             target/site/jacoco/jacoco.xml
             target/site/jacoco/index.html
 
-      - name: Add coverage to PR
-        uses: madrapps/jacoco-report@v1.6.1
+      - name: Generate JaCoCo Badge
+        uses: Kmoch/jacoco-badge-generator@v1
         with:
-          paths: target/site/jacoco/jacoco.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: 80
-          min-coverage-changed-files: 60
-          title: '# :recycle: Coverage Report'
-          update-comment: true
-          pass-emoji: ':green_circle:'
-          fail-emoji: ':red_circle:'
+          paths: target/site/jacoco/jacoco.xml  # Path to the JaCoCo XML report
+          output: .github/badges/jacoco.json
 
   deploy:
     name: Deploy App
