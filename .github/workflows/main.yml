@@ -2,10 +2,10 @@ name: Deploy Spring Boot App
 
 on:
   push:
-    branches: [ main ]  # Trigger on pushes to the main branch
+    branches: [ main ]
 
 env:
-  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}  # Token for Fly.io
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
   build-and-test:
@@ -51,13 +51,13 @@ jobs:
           echo "branch coverage = ${{ steps.jacoco.outputs.branches }}"
 
       - name: Commit and Push Badge
-        uses: EndBug/add-and-commit@v7  # Update to the latest version
+        uses: EndBug/add-and-commit@v7
         with:
           author_name: github-actions[bot]
           author_email: github-actions[bot]@users.noreply.github.com
           message: 'Update JaCoCo badge'
           add: .github/badges/*.svg
-          token: ${{ secrets.GITHUB_TOKEN }}                # Use the GITHUB_TOKEN for pushing changes
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Correct input
 
   deploy:
     name: Deploy App
