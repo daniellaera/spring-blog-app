@@ -45,9 +45,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xmlstarlet
           
-          # Extract coverage percentage
-          COVERAGE=$(xmlstarlet sel -t -v "//report//line[@type='COMPLEXITY']/@covered" target/site/jacoco/jacoco.xml)
-          TOTAL=$(xmlstarlet sel -t -v "//report//line[@type='COMPLEXITY']/@missed" target/site/jacoco/jacoco.xml)
+          # Extract coverage percentage, ignoring DTD validation
+          COVERAGE=$(xmlstarlet sel --no-validate -t -v "//report//line[@type='COMPLEXITY']/@covered" target/site/jacoco/jacoco.xml)
+          TOTAL=$(xmlstarlet sel --no-validate -t -v "//report//line[@type='COMPLEXITY']/@missed" target/site/jacoco/jacoco.xml)
           
           if [ -z "$TOTAL" ] || [ "$TOTAL" -eq 0 ]; then
             echo "No lines found in the report."
@@ -67,19 +67,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Upload JaCoCo Coverage Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: jacoco-report
-          path: target/site/jacoco
 
       - name: Display Coverage Percentage
         run: |
