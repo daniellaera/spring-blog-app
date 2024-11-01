@@ -56,9 +56,9 @@ jobs:
           title: 'Update JaCoCo badge'
           body: 'This pull request updates the JaCoCo badge based on the latest coverage report.'
           base: main
-          head: badge-update-branch
-          paths: .github/badges/*.svg
-          token: ${{ secrets.GITHUB_TOKEN }}
+          head: create-pull-request/patch  # This branch will be created for the PR
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the automatically generated token
+          commit-message: '[create-pull-request] automated change'
 
   deploy:
     name: Deploy App
