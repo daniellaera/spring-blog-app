@@ -45,6 +45,11 @@ jobs:
         with:
           name: jacoco-report
           path: target/site/jacoco/index.html  # Adjust this path if necessary
+      - name: Generate JaCoCo Badge
+        id: jacoco
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          jacoco-csv-file: build/reports/jacoco/jacoco.csv
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
