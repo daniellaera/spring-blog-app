@@ -2,7 +2,6 @@ package com.daniellaera.blog_app.it;
 
 import com.daniellaera.blog_app.model.Post;
 import com.daniellaera.blog_app.repository.PostRepository;
-import org.flywaydb.core.Flyway;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -19,7 +17,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
 import java.util.Arrays;
 
@@ -60,33 +57,50 @@ class PostControllerIT {
     @Autowired
     private PostRepository postRepository;
 
-    //@BeforeEach
-    //void setup() {
-    //    Post post1 = new Post();
-    //    post1.setTitle("Title 1");
-    //    post1.setContent("test content");
-    //    Post post2 = new Post();
-    //    post2.setTitle("Title 2");
-    //    post2.setContent("test content");
-    //    Post post3 = new Post();
-    //    post3.setTitle("Title 3");
-    //    post3.setContent("test content");
-//
-    //    postRepository.deleteAll();
-    //    postRepository.saveAll(Arrays.asList(
-    //            post1, post2, post3
-    //    ));
-    //}
+    @BeforeEach
+    void setup() {
+        postRepository.deleteAll();
+
+        Post post1 = new Post();
+        post1.setTitle("Title 1");
+        post1.setContent("Content 1");
+
+        Post post2 = new Post();
+        post2.setTitle("Title 2");
+        post2.setContent("Content 2");
+
+        postRepository.saveAll(Arrays.asList(post1, post2));
+    }
 
     @Test
-    void getPosts() throws Exception {
+    void getPosts_ReturnsAllPosts() throws Exception {
         mockMvc.perform(get("/api/v3/post")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()").value(4))
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].title").value("Title 1"))
-                .andExpect(jsonPath("$[1].title").value("Title 2"))
+                .andExpect(jsonPath("$[1].title").value("Title 2"));
+    }
+
+    @Test
+    void getPosts_WhenNoPosts_ReturnsEmptyArray() throws Exception {
+        postRepository.deleteAll();
+
+        mockMvc.perform(get("/api/v3/post")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    void getPosts_CheckSingleFieldContent() throws Exception {
+        mockMvc.perform(get("/api/v3/post")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].content").value("Content 1"))
                 .andExpect(jsonPath("$[1].content").value("Content 2"));
     }
 
