@@ -1,7 +1,6 @@
 # Spring Blog Application
 
 [![Deploy Spring Boot App](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml/badge.svg)](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml)
-
 ![Coverage](https://raw.githubusercontent.com/daniellaera/spring-blog-app/badges/badges/jacoco.svg)
 
 This Spring Boot application serves as a blog platform, allowing users to create, read, update, and delete blog posts. Key features include user authentication, post categorization, and support for database migrations.
@@ -21,15 +20,27 @@ This Spring Boot application serves as a blog platform, allowing users to create
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/your-repo/spring-blog-app.git
+   git clone https://github.com/daniellaera/spring-blog-app.git
    cd spring-blog-app
    ```
 
-2. **Set Up Environment Variables**
-   Configure required environment variables in `.env` or in your deployment settings:
-   - `DATABASE_URL`
-   - `DATABASE_USERNAME`
-   - `DATABASE_PASSWORD`
+## Deployment Configuration
+
+1. **Set Up Environment Variables**  
+   Configure the following environment variables in your GitHub Actions workflow file (`.yml`), in the deployment service's settings, or in the repository's secrets section:
+
+   - `DATABASE_URL`: The URL for your database connection (e.g., `jdbc:postgresql://<host>:<port>/<dbname>` for PostgreSQL).
+   - `DATABASE_USERNAME`: The username for your database.
+   - `DATABASE_PASSWORD`: The password for your database.
+
+   ### Example for GitHub Actions
+   You can set these environment variables as repository secrets in GitHub, and then reference them in your workflow file:
+
+   ```yaml
+   env:
+     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+     DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+     DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
 
 ## Technologies Used
 
@@ -46,7 +57,12 @@ This Spring Boot application serves as a blog platform, allowing users to create
    ./mvnw spring-boot:run
    ```
 
-2. **Access the application** at `http://localhost:8080`.
+2. **Run with the dev profile to load configuration from application-dev.yml** with:
+   ```bash
+   ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+   ```
+
+3. **Access the application** at `http://localhost:8080`
 
 ## Configuration
 
@@ -74,14 +90,16 @@ To build the application and create an executable JAR file:
 
 ## Endpoints
 
-### Public Endpoints
-- `GET /posts` - Retrieves all blog posts
-- `GET /posts/{id}` - Retrieves a specific post by ID
+### Post Endpoints
+- `GET /api/v3/post` - Retrieves all blog posts
+- `GET /api/v3/post/{id}` - Retrieves a specific post by ID
+- `POST /api/v3/post` - Create new post
+- `DELETE /api/v3/post/{id}` - Delete a specific post by ID
 
-### Protected Endpoints
-- `POST /posts` - Creates a new blog post (requires authentication)
-- `PUT /posts/{id}` - Updates an existing post (requires authentication)
-- `DELETE /posts/{id}` - Deletes a post (requires authentication)
+### Comment Endpoints
+- `GET /api/v3/{postId}/comments` - Retrieves all comments by postId
+- `POST /api/v3/comment/{postId}` - Create new comment on specific postId
+- `PATCH /api/v3/comment/{commentId}` - Update comment by ID
 
 ## Testing
 
@@ -98,3 +116,38 @@ The application is configured to deploy using **Fly.io** via GitHub Actions. Ens
 - `DATABASE_URL`
 - `DATABASE_USERNAME`
 - `DATABASE_PASSWORD`
+
+## Flyway Migrations
+This SQL file, located in `src/main/resources/db/migration`, is processed by Flyway on startup if the database is missing this migration. It includes the initial table definitions and some sample data for testing:
+`V1__init.sql`
+```sql
+-- Create post table
+CREATE TABLE post (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255),
+    content TEXT
+);
+
+-- Create comment table with foreign key to post table
+CREATE TABLE comment (
+    id SERIAL PRIMARY KEY,
+    text TEXT,
+    post_id BIGINT,
+    FOREIGN KEY (post_id) REFERENCES post(id)
+);
+
+-- Insert initial data into post table
+INSERT INTO post (title, content)
+VALUES ('Title 1', 'Content 1'),
+       ('Title 2', 'Content 2'),
+       ('Title 3', 'Content 3'),
+       ('Title 4', 'Content 4');
+
+-- Insert initial data into comment table
+INSERT INTO comment (text, post_id)
+VALUES ('comment 1', 1),
+       ('comment 2', 2),
+       ('comment 3', 3);
+```
+
+> *Tip: For safe versioning, avoid modifying applied migration files like `V1__init.sql`. Instead, create new migration files (e.g., `V2__add_column.sql`) for schema updates.*

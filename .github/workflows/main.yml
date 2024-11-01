@@ -5,10 +5,10 @@ on:
     branches: [ main ]
 
 permissions:
-  contents: write  # Grant write permissions to the actions
+  contents: write
 
 env:
-  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}  # Token for Fly.io
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
   build-and-test:
