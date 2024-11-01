@@ -88,25 +88,26 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.9</version>
+				<version>0.8.12</version><!-- Use a stable version -->
 				<executions>
 					<execution>
+						<id>default-prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>report</id>
-						<phase>verify</phase>
+						<id>default-report</id>
+						<phase>verify</phase> <!-- Ensure it's tied to the verify phase -->
 						<goals>
 							<goal>report</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
 							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
+							<outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
 							<formats>
 								<format>HTML</format>
-								<format>CSV</format> <!-- Ensure CSV format is enabled -->
+								<format>CSV</format> <!-- Ensure CSV format is included -->
 							</formats>
 						</configuration>
 					</execution>
