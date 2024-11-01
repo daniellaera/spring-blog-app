@@ -25,10 +25,10 @@ jobs:
 
       - name: Check for JaCoCo Reports
         run: |
-          if [ -f $GITHUB_WORKSPACE/target/site/jacoco/jacoco.csv ]; then
-            echo "JaCoCo report found."
+          if [ -f $GITHUB_WORKSPACE/target/site/jacoco/jacoco.xml ]; then
+            echo "JaCoCo XML report found."
           else
-            echo "JaCoCo report not found!"
+            echo "JaCoCo XML report not found!"
             exit 1
           fi
 
@@ -37,6 +37,18 @@ jobs:
         with:
           name: jacoco-report
           path: $GITHUB_WORKSPACE/target/site/jacoco
+
+      - name: Parse JaCoCo Coverage
+        id: parse-coverage
+        run: |
+          # Install xmlstarlet for parsing XML
+          sudo apt-get update
+          sudo apt-get install -y xmlstarlet
+          
+          # Parse the coverage percentage from the JaCoCo XML report
+          COVERAGE=$(xmlstarlet sel -t -v "//report/sources/source[@type='COMPLEXITY']/@line" $GITHUB_WORKSPACE/target/site/jacoco/jacoco.xml)
+          echo "Coverage: $COVERAGE"
+          echo "coverage=$COVERAGE" >> $GITHUB_ENV
 
   coverage:
     name: Code Coverage
@@ -59,14 +71,9 @@ jobs:
           name: jacoco-report
           path: $GITHUB_WORKSPACE/target/site/jacoco
 
-      - name: Generate Coverage Badge
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          jacoco-csv-file: $GITHUB_WORKSPACE/target/site/jacoco/jacoco.csv
-          badges-directory: .github/badges
-          generate-coverage-badge: true
-          coverage-badge-filename: jacoco.svg
-          on-missing-report: fail
+      - name: Display Coverage Percentage
+        run: |
+          echo "JaCoCo coverage percentage: ${{ env.coverage }}"
 
   deploy:
     name: Deploy App
