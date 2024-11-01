@@ -22,6 +22,13 @@ jobs:
 
       - name: Build, Test, and Generate Coverage
         run: mvn clean verify
+
+      - name: Upload JaCoCo Coverage Report for Debugging
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-debug
+          path: target/site/jacoco  # Uploads the JaCoCo directory for debugging in coverage job
+
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
@@ -37,11 +44,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Upload JaCoCo Coverage Report
-        uses: actions/upload-artifact@v3
+      - name: Download JaCoCo Coverage Report
+        uses: actions/download-artifact@v3
         with:
-          name: jacoco-report
-          path: target/site/jacoco
+          name: jacoco-debug  # Downloads the JaCoCo report generated in the test job
+
       - name: Generate Coverage Badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
@@ -50,6 +57,7 @@ jobs:
           generate-coverage-badge: true
           coverage-badge-filename: jacoco.svg
           on-missing-report: fail
+
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
