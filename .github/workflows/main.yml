@@ -20,8 +20,8 @@ jobs:
           distribution: 'temurin'  # Using Temurin distribution
           cache: maven
 
-      - name: Build and Test with Maven
-        run: mvn clean test  # Run your tests
+      - name: Build, Test, and Generate Coverage
+        run: mvn clean verify  # This builds, tests, and generates JaCoCo coverage reports
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
