@@ -51,9 +51,18 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout -B badges  # Create or switch to the badges branch
+
+          # Create or switch to the badges branch
+          git checkout -B badges  
+          
+          # Ensure badges directory exists
+          mkdir -p badges
+          
+          # Copy generated badge files
           cp .github/badges/jacoco.svg badges/
           cp .github/badges/jacoco.json badges/
+
+          # Stage and commit changes
           git add badges/*
           git commit -m "Update JaCoCo coverage badges" || echo "No changes to commit"
           git push origin badges --force  # Push to badges branch
