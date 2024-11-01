@@ -16,16 +16,16 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '21'  # Specify Java version 21
-          distribution: 'temurin'  # Using Temurin distribution
+          java-version: '21'
+          distribution: 'temurin'
           cache: maven
 
       - name: Build, Test, and Generate Coverage
-        run: mvn clean verify  # This builds, tests, and generates JaCoCo coverage reports
+        run: mvn clean verify
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-    needs: test  # This job depends on the test job
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -33,34 +33,32 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '21'  # Specify Java version 21
-          distribution: 'temurin'  # Using Temurin distribution
+          java-version: '21'
+          distribution: 'temurin'
           cache: maven
 
-      - name: Generate JaCoCo Report
-        run: mvn jacoco:report  # Generate the coverage report
-
-      - name: Upload JaCoCo Report
+      - name: Upload JaCoCo Coverage Report
         uses: actions/upload-artifact@v3
         with:
           name: jacoco-report
-          path: target/site/jacoco/index.html  # Adjust this path if necessary
-      - name: Generate JaCoCo Badge
-        id: jacoco
+          path: target/site/jacoco
+      - name: Generate Coverage Badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          jacoco-csv-file: build/reports/jacoco/jacoco.csv
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+          badges-directory: .github/badges
+          generate-coverage-badge: true
+          coverage-badge-filename: jacoco.svg
+          on-missing-report: fail
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
-    needs: coverage  # This job depends on the coverage job
+    needs: coverage
     steps:
       - uses: actions/checkout@v3
 
-      # Set up Flyctl
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      # Deploy Spring Boot Backend
       - name: Deploy Spring Boot App
         run: |
           flyctl deploy --remote-only
