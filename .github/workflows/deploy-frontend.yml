@@ -36,12 +36,10 @@ jobs:
     needs: build-frontend
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Set up Fly CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy Angular Application
-        run: flyctl deploy --remote-only --verbose
-        working-directory: ./frontend
+        working-directory: ./frontend  # Make sure we're in the frontend folder
+        run: |
+          flyctl deploy --remote-only
