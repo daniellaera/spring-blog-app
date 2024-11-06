@@ -9,6 +9,7 @@ permissions:
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  FLY_API_FRONTEND_TOKEN: ${{ secrets.FLY_API_FRONTEND_TOKEN }}
 
 jobs:
   deploy:
