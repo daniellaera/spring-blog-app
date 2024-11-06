@@ -71,25 +71,6 @@ jobs:
           git commit -m "Update JaCoCo coverage badges" || echo "No changes to commit"
           git push origin badges --force  # Push to badges branch
 
-  build-frontend:
-    name: Build Frontend
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install Dependencies and Build Frontend
-        working-directory: ./frontend
-        run: |
-          npm install
-          npm run build
-
       - name: Upload Frontend Build Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -112,19 +93,3 @@ jobs:
         working-directory: ./backend
         run: |
           flyctl deploy --remote-only
-
-  deploy-frontend:
-    name: Deploy Frontend
-    runs-on: ubuntu-latest
-    needs: build-frontend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Fly CLI
-        uses: superfly/flyctl-actions/setup-flyctl@master
-
-      - name: Deploy Angular Application
-        run: flyctl deploy
-        working-directory: ./frontend
