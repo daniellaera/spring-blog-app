@@ -18,11 +18,11 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         // Allow multiple origins: development and production
-        //List<String> allowedOrigins = Arrays.asList(
-        //        "http://localhost:4200",  // Local development
-        //        "https://blog-app-frontend.fly.dev"  // Production frontend URL
-        //);
-        corsConfiguration.setAllowedOrigins(List.of("*"));
+        List<String> allowedOrigins = Arrays.asList(
+                "http://localhost:4200",  // Local development
+                "https://blog-app-frontend.fly.dev"  // Production frontend URL
+        );
+        corsConfiguration.setAllowedOrigins(allowedOrigins);
 
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
