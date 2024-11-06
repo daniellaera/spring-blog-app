@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -15,12 +16,19 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Collections.singletonList("*")); // Allow only Angular app origin
+
+        // Allow multiple origins: development and production
+        List<String> allowedOrigins = Arrays.asList(
+                "http://localhost:4200",  // Local development
+                "https://blog-app-frontend.fly.dev"  // Production frontend URL
+        );
+        corsConfiguration.setAllowedOrigins(allowedOrigins);
+
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
-        corsConfiguration.setExposedHeaders(Collections.singletonList("Authorization"));
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setMaxAge(3600L); // Pre-flight request max age in seconds
+        corsConfiguration.setExposedHeaders(List.of("Authorization"));
+        corsConfiguration.setAllowCredentials(true);  // Allow credentials (cookies, etc.)
+        corsConfiguration.setMaxAge(3600L);  // Pre-flight request max age in seconds
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
