@@ -1,6 +1,14 @@
 FROM node:20.18.0-slim AS build
 WORKDIR /app
 
+# Accept build argument
+ARG API_URL
+
+# Set the API_URL environment variable for the build process
+ENV API_URL=$API_URL
+
+ARG NODE_ENV=production
+
 COPY package*.json ./
 RUN npm install
 COPY . .
