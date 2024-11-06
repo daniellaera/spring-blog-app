@@ -9,6 +9,7 @@ permissions:
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  API_URL: ${{ secrets.API_URL }}
 
 jobs:
   deploy:
@@ -125,4 +126,5 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_FRONTEND_TOKEN }}
         run: |
-          flyctl deploy --remote-only
+          flyctl deploy --remote-only \
+          --build-arg API_URL=${{ secrets.API_URL }} \

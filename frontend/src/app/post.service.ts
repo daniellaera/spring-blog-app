@@ -12,12 +12,10 @@ interface Post {
   providedIn: 'root',
 })
 export class PostService {
-  private apiUrl = environment.apiUrl;  // The API endpoint
+  private apiUrl = `${environment.apiUrl}/api/v3/post`;  // The API endpoint
 
   constructor(private http: HttpClient) {
-    fetch(environment.apiUrl).then(response => response.json()).then(data => {
-      console.log('env->', environment.apiUrl)
-    });
+      console.log('env->', this.apiUrl)
   }
 
   // This method fetches posts from the backend API
