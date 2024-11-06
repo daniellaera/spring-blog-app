@@ -11,10 +11,27 @@ env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
+  deploy:
+    name: Deploy App
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4  # Checkout the code from the repository
+      - uses: dorny/paths-filter@v2  # Filter the paths that have been changed
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
   build-and-test-backend:
     name: Build and Test Application (Backend)
     runs-on: ubuntu-latest
-
+    needs: deploy
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -71,16 +88,11 @@ jobs:
           git commit -m "Update JaCoCo coverage badges" || echo "No changes to commit"
           git push origin badges --force  # Push to badges branch
 
-      - name: Upload Frontend Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-build
-          path: frontend/dist/
-
   deploy-backend:
     name: Deploy Backend
     runs-on: ubuntu-latest
     needs: build-and-test-backend
+    if: ${{ needs.deploy.outputs.backend == 'true' }}
 
     steps:
       - name: Checkout code
@@ -97,20 +109,11 @@ jobs:
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
+    needs: deploy
+    if: ${{ needs.deploy.outputs.frontend == 'true' }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Fly CLI
-        uses: superfly/flyctl-actions/setup-flyctl@master
-
-      - name: List files in frontend directory
-        run: ls -l ./frontend  # Check if frontend folder is correctly fetched
-
-      - name: Confirm fly.toml exists
-        run: ls -l ./frontend/fly.toml  # Ensure fly.toml exists
-
-      - name: Deploy Angular Application
-        run: flyctl deploy
-        working-directory: ./frontend
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: |
+          flyctl deploy --remote-only
