@@ -1,5 +1,4 @@
 # Spring Blog Application
-# work in progress
 
 [![Deploy Spring Boot App](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml/badge.svg)](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml)
 ![Coverage](https://raw.githubusercontent.com/daniellaera/spring-blog-app/badges/badges/jacoco.svg)
