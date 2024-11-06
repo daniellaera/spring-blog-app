@@ -111,7 +111,7 @@ jobs:
       - name: Deploy Spring Boot App
         working-directory: ./backend
         run: |
-          fly deploy --remote-only
+          flyctl deploy --remote-only
 
   deploy-frontend:
     name: Deploy Frontend
@@ -126,5 +126,5 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy Angular Application
-        run: fly deploy --remote-only
+        run: flyctl deploy --remote-only
         working-directory: ./frontend
