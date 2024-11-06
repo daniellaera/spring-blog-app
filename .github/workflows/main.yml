@@ -12,7 +12,7 @@ env:
 
 jobs:
   build-and-test-backend:
-    name: Build and Test Application
+    name: Build and Test Application (Backend)
     runs-on: ubuntu-latest
 
     steps:
@@ -30,27 +30,27 @@ jobs:
         working-directory: ./backend
         run: mvn clean verify
 
-      - name: Upload JaCoCo Coverage Report
+      - name: Upload JaCoCo Coverage Report (Backend)
         uses: actions/upload-artifact@v4
         with:
-          name: jacoco-report
+          name: jacoco-report-backend
           path: |
-            target/site/jacoco/jacoco.csv
-            target/site/jacoco/jacoco.xml
-            target/site/jacoco/index.html
+            backend/target/site/jacoco/jacoco.csv
+            backend/target/site/jacoco/jacoco.xml
+            backend/target/site/jacoco/index.html
 
-      - name: Generate JaCoCo Badge
-        id: generate_badge
+      - name: Generate JaCoCo Badge (Backend)
+        id: generate_badge_backend
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          jacoco-csv-file: target/site/jacoco/jacoco.csv
+          jacoco-csv-file: backend/target/site/jacoco/jacoco.csv
           badges-directory: .github/badges
           generate-coverage-badge: true
           coverage-badge-filename: jacoco.svg
           generate-coverage-endpoint: true
           coverage-endpoint-filename: jacoco.json
 
-      - name: Commit and push badges to badges branch
+      - name: Commit and push badges to badges branch (Backend)
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           git config --global user.name 'github-actions'
@@ -98,7 +98,7 @@ jobs:
           path: frontend/dist/
 
   deploy-backend:
-    name: Deploy App
+    name: Deploy Backend
     runs-on: ubuntu-latest
     needs: build-and-test-backend
 
