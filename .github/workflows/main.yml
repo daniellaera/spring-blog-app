@@ -126,5 +126,5 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy Angular Application
-        run: flyctl deploy --remote-only
+        run: flyctl deploy
         working-directory: ./frontend
