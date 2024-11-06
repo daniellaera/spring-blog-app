@@ -123,4 +123,4 @@ jobs:
       - name: Deploy Angular App
         working-directory: ./frontend
         run: |
-          flyctl deploy -a blog-app-angular
+          flyctl deploy --remote-only
