@@ -9,7 +9,6 @@ permissions:
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-  FLY_API_FRONTEND_TOKEN: ${{ secrets.FLY_API_FRONTEND_TOKEN }}
 
 jobs:
   deploy:
@@ -123,5 +122,7 @@ jobs:
 
       - name: Deploy Angular App
         working-directory: ./frontend
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_FRONTEND_TOKEN }}
         run: |
           flyctl deploy --remote-only
