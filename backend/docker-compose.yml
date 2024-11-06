@@ -1,0 +1,13 @@
+services:
+  social-login:
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    volumes:
+      - social-login-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+volumes:
+  social-login-data:
