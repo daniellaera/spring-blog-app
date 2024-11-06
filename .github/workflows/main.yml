@@ -74,7 +74,7 @@ jobs:
   build-frontend:
     name: Build Frontend
     runs-on: ubuntu-latest
-    needs: build-and-test-backend
+    needs: deploy-backend
 
     steps:
       - name: Checkout code
@@ -111,5 +111,22 @@ jobs:
 
       - name: Deploy Spring Boot App
         working-directory: ./backend
+        run: |
+          flyctl deploy --remote-only
+
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    needs: build-frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Fly CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy Angular Application
+        working-directory: ./frontend
         run: |
           flyctl deploy --remote-only
