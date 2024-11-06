@@ -12,6 +12,9 @@ RUN npm install
 COPY . .
 RUN npm run build --prod
 
+# Run the replace-env-vars script to replace the API_URL in the prod environment file
+RUN ./replace-env-vars.sh
+
 FROM nginx:alpine
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
