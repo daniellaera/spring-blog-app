@@ -114,7 +114,13 @@ jobs:
     if: ${{ needs.deploy.outputs.frontend == 'true' }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: |
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Fly CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy Angular App
+        working-directory: ./frontend
+        run: |
           flyctl deploy --remote-only
