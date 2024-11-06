@@ -19,6 +19,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Verify frontend directory exists
+        run: |
+          ls -l ./frontend
+          # This will help to debug if the frontend directory exists
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -36,10 +41,18 @@ jobs:
     needs: build-frontend
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify frontend directory exists
+        run: |
+          ls -l ./frontend
+          # This ensures that the frontend folder exists before deploying
+
       - name: Set up Fly CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy Angular Application
-        working-directory: ./frontend  # Make sure we're in the frontend folder
+        working-directory: ./frontend  # Ensure we are in the correct folder
         run: |
           flyctl deploy --remote-only
