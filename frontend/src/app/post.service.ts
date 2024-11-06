@@ -15,7 +15,8 @@ export class PostService {
   private apiUrl = `${environment.apiUrl}/api/v3/post`;  // The API endpoint
 
   constructor(private http: HttpClient) {
-      console.log('env->', this.apiUrl)
+      console.log('environment.apiUrl->', environment.apiUrl)
+      console.log('this.apiUrl->', this.apiUrl)
   }
 
   // This method fetches posts from the backend API
