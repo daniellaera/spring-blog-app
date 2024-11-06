@@ -8,7 +8,7 @@ RUN mvn -f /app/pom.xml clean package -DskipTests
 
 FROM openjdk:21-jdk-slim
 
-COPY --from=maven-builder app/target/blog-app-0.0.1-SNAPSHOT.jar /app-service/blog-app-0.0.1-SNAPSHOT.jar
+COPY --from=maven-builder app/target/backend-0.0.1-SNAPSHOT.jar /app-service/backend-0.0.1-SNAPSHOT.jar
 
 WORKDIR /app-service
 
