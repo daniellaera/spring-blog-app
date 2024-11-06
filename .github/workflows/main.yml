@@ -95,11 +95,22 @@ jobs:
           flyctl deploy --remote-only
 
   deploy-frontend:
-    needs: deploy-backend
+    name: Deploy Frontend
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: |
-          flyctl deploy --remote-only
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Fly CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: List files in frontend directory
+        run: ls -l ./frontend  # Check if frontend folder is correctly fetched
+
+      - name: Confirm fly.toml exists
+        run: ls -l ./frontend/fly.toml  # Ensure fly.toml exists
+
+      - name: Deploy Angular Application
+        run: flyctl deploy
         working-directory: ./frontend
