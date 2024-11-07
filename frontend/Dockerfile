@@ -4,7 +4,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build --prod
+# Mount the secret (API_URL) and replace it in environment.prod.ts or environment.ts
+RUN --mount=type=secret,id=API_URL \
+    API_URL="$(cat /run/secrets/API_URL)" \
+    sed -i "s|\${API_URL}|$API_URL|" src/environments/environment.prod.ts \
+    && npm run build --prod
 
 FROM nginx:alpine
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html

@@ -1,17 +1,18 @@
 #!/bin/sh
 
-# replacement for the dev environment / target
-if [ -n "$API_URL" ] && [ -f 'src/environments/environment.ts' ]; then
-    echo "Replacing API_URL for dev..."
+# Ensure that API_URL is set in the environment variables
+if [ -n "$API_URL" ]; then
+    echo "Replacing API_URL in JavaScript files with value: $API_URL"
 
-    sed -i "s|apiUrl: '.*',|apiUrl: '${API_URL}',|" src/environments/environment.ts
+    # Replace ${API_URL} in all JS files in /usr/share/nginx/html with the actual value of API_URL
+    find /usr/share/nginx/html -type f -name "*.js" -exec sed -i "s|\${API_URL}|$API_URL|g" {} \;
+
+    # Optionally, print the first few lines of the first JS file to confirm
+    echo "First few lines of the first JS file after replacement:"
+    head -n 10 $(find /usr/share/nginx/html -type f -name "*.js" | head -n 1)
+else
+    echo "API_URL environment variable is not set!"
 fi
 
-# replacement for the prod environment / target
-if [ -n "$API_URL" ] && [ -d '/usr/share/nginx/html' ]; then
-    echo "Replacing API_URL for prod..."
-
-    find '/usr/share/nginx/html' -type f -name "*.js" -exec sed -i "s|this.apiUrl=\"[^\"]*\"|this.apiUrl=\"${API_URL}\"|" {} \;
-fi
-
+# Run the default command (Nginx)
 exec "$@"
