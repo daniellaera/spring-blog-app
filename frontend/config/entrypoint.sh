@@ -4,11 +4,10 @@ echo "Starting environment variable replacement in JavaScript files..."
 
 # Check if the API_URL is set and the target directory exists
 if [ -n "$API_URL" ] && [ -d '/usr/share/nginx/html' ]; then
-    echo "Replacing API_URL for prod... with value: $API_URL"
+    echo "Replacing ${API_URL} in JavaScript files with value: $API_URL"
 
-    # Ensure proper quoting and use of the correct regex for the substitution
-    # Escape special characters in $API_URL
-    find '/usr/share/nginx/html' -type f -name "*.js" -exec sed -i "s|this.apiUrl=\"[^\"]*\"|this.apiUrl=\"$(echo "$API_URL" | sed 's/[&/\]/\\&/g')\"|" {} \;
+    # Replace the placeholder ${API_URL} with the actual value of the environment variable
+    find '/usr/share/nginx/html' -type f -name "*.js" -exec sed -i "s|\${API_URL}|$API_URL|g" {} \;
 
     # Debug: Confirm the replacement by showing first few lines of a file
     echo "First few lines of the first .js file after replacement:"
