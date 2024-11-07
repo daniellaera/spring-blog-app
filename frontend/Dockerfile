@@ -8,10 +8,10 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
-# Mount the secret (API_URL) and replace it in environment.prod.ts or environment.ts
+# Mount the secret (API_URL) and replace the '${API_URL}' placeholder with the actual value in environment.prod.ts
 RUN --mount=type=secret,id=API_URL \
     API_URL="$(cat /run/secrets/API_URL)" \
-    envsubst < src/environments/environment.prod.ts > src/environments/environment.prod.ts \
+    sed -i "s|\${API_URL}|$API_URL|g" src/environments/environment.prod.ts \
     && npm run build --prod
 
 FROM nginx:alpine
