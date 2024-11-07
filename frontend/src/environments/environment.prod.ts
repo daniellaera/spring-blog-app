@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: window.env.API_URL
+  apiUrl: 'https://blog-app-black-pine-3535.fly.dev/v3/post'
 };
