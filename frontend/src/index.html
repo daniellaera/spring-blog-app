@@ -9,5 +9,11 @@
 </head>
 <body>
   <app-root></app-root>
+  <!-- Inject runtime variables here -->
+  <script>
+    window.env = {
+      API_URL: '${API_URL}'  <!-- This is replaced at runtime -->
+    };
+  </script>
 </body>
 </html>
