@@ -6,5 +6,5 @@ if [ -n "$API_URL" ]; then
     sed -i "s|\"${API_URL}\"|\"$API_URL\"|g" /usr/share/nginx/html/*.js
 fi
 
-# Run nginx
+# Run nginx in the foreground
 exec "$@"
