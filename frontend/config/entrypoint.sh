@@ -2,18 +2,22 @@
 
 echo "Starting environment variable replacement in JavaScript files..."
 
-if [ -n "$API_URL" ]; then
-    echo "Replacing API_URL with value: $API_URL"
+# Check if the API_URL is set and the target directory exists
+if [ -n "$API_URL" ] && [ -d '/usr/share/nginx/html' ]; then
+    echo "Replacing API_URL for prod... with value: $API_URL"
 
-    # Perform the replacement and log the file contents
-    find '/usr/share/nginx/html' -type f -name "*.js" -exec sed -i "s|\${API_URL}|$API_URL|g" {} \;
+    # Ensure proper quoting and use of the correct regex for the substitution
+    # Escape special characters in $API_URL
+    find '/usr/share/nginx/html' -type f -name "*.js" -exec sed -i "s|this.apiUrl=\"[^\"]*\"|this.apiUrl=\"$(echo "$API_URL" | sed 's/[&/\]/\\&/g')\"|" {} \;
 
-    # Check if replacement worked by printing out the contents of the first file
-    echo "Contents of first JS file after replacement:"
-    head -n 10 /usr/share/nginx/html/*.js  # Just print the first 10 lines of the first JS file
+    # Debug: Confirm the replacement by showing first few lines of a file
+    echo "First few lines of the first .js file after replacement:"
+    # Using $(find ...) to show the first file and its first 10 lines
+    # shellcheck disable=SC2046
+    head -n 10 $(find /usr/share/nginx/html -type f -name "*.js" | head -n 1)
 else
-    echo "API_URL environment variable is not set!"
+    echo "API_URL is not set or target directory '/usr/share/nginx/html' does not exist!"
 fi
 
-# Start Nginx
+# Execute the final command (e.g., Nginx start or any other command passed)
 exec "$@"
