@@ -10,10 +10,13 @@ FROM nginx:alpine
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy the entrypoint script for API_URL replacement
-COPY ./config/entrypoint.sh /usr/share/entrypoint.sh
-RUN chmod +x /usr/share/entrypoint.sh
+COPY ./config/init.sh /usr/share/init.sh
+
+# Ensure the init.sh script is executable
+RUN chmod +x /usr/share/init.sh
 
 EXPOSE 80
-ENTRYPOINT ["/usr/share/entrypoint.sh"]
+
+# Use entrypoint script
+ENTRYPOINT ["/usr/share/init.sh"]
 CMD ["nginx", "-g", "daemon off;"]

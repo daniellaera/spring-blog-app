@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Starting entrypoint script..."
 echo "API_URL=$API_URL"
