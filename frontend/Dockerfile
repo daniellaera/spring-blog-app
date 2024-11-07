@@ -15,4 +15,5 @@ COPY ./config/entrypoint.sh /usr/share/entrypoint.sh
 RUN chmod +x /usr/share/entrypoint.sh
 
 EXPOSE 80
+ENTRYPOINT ["/usr/share/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
