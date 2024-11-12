@@ -1,10 +1,35 @@
 <div class="post-list">
   <h2>List of Posts</h2>
-  <ul class="p-list">
-    <li *ngFor="let post of posts" class="p-list-item">
-      <h3>{{ post.title }}</h3>
-      <p>{{ post.content }}</p>
-      <!-- <button pButton label="Read More" icon="pi pi-info-circle" (click)="onReadMore(post)"></button> -->
+
+  <!-- Post Form for adding or editing a post -->
+  <app-post-form
+    [post]="selectedPost"
+    (postUpdated)="onPostUpdated($event)"
+    (postAdded)="onPostAdded($event)"
+    (postDeleted)="onPostDeleted($event)">
+  </app-post-form>
+
+  <ul>
+    <li *ngFor="let post of posts">
+      <p-card class="custom-card" header="{{ post.title }}">
+        <p>{{ post.content }}</p>
+        <ng-template pTemplate="footer">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            <button
+              pButton
+              label="Edit"
+              icon="pi pi-pencil"
+              (click)="onUpdatePost(post)">
+            </button>
+
+            <!-- Comment Icon and Count -->
+            <div *ngIf="post.comments && post.comments.length > 0" class="p-d-flex p-ai-center">
+              <i class="pi pi-comment p-mr-2"></i>
+              <span class="p-badge p-badge-info">{{ post.comments.length }}</span>
+            </div>
+          </div>
+        </ng-template>
+      </p-card>
     </li>
   </ul>
 </div>

@@ -48,8 +48,23 @@ public class PostServiceImpl implements PostService {
         postRepository.deleteById(id);
     }
 
+    @Override
+    public PostDTO updatePost(Long postId, PostDTO postDto) {
+        Optional<Post> post = postRepository.findById(postId);
+        if (post.isEmpty()) {
+            throw new RuntimeException("Post not found");
+        }
+        Post existingPost = post.get();
+        existingPost.setTitle(postDto.getTitle());
+        existingPost.setContent(postDto.getContent());
+
+        Post saved = postRepository.save(existingPost);
+        return convertToDTO(saved);
+    }
+
     private PostDTO convertToDTO(Post post) {
         PostDTO postDTO = new PostDTO();
+        postDTO.setId(post.getId());
         postDTO.setContent(post.getContent());
         postDTO.setTitle(post.getTitle());
 

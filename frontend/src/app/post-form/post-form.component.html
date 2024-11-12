@@ -1,0 +1,61 @@
+<div class="post-form p-shadow-2 p-p-4 p-mb-5 p-border-round" style="max-width: 600px; margin: auto; background-color: #fff;">
+  <h3 class="p-text-center p-mb-4">{{ post ? 'Edit Post' : 'Add New Post' }}</h3>
+
+  <!-- Title Field -->
+  <div class="p-field">
+    <label for="titleInput">Title</label>
+    <input
+      id="titleInput"
+      pInputText
+      [(ngModel)]="title"
+      name="title"
+      required
+      placeholder="Enter Post Title"
+      class="p-inputtext p-component"
+    />
+  </div>
+
+  <!-- Content Field -->
+  <div class="p-field">
+    <label for="contentInput">Content</label>
+    <textarea
+      id="contentInput"
+      pTextarea
+      [(ngModel)]="content"
+      name="content"
+      required
+      rows="5"
+      placeholder="Enter Post Content"
+      class="p-textarea p-component"
+    ></textarea>
+  </div>
+
+  <!-- Button Container -->
+  <div class="p-mt-4 p-d-flex p-jc-between p-ai-center">
+    <!-- Add or Update Button -->
+    <button
+      *ngIf="!post"
+      class="p-button p-button-rounded p-button-success"
+      (click)="onAddPost()"
+    >
+      Add Post
+    </button>
+
+    <button
+      *ngIf="post"
+      class="p-button p-button-rounded p-button-primary"
+      (click)="onUpdatePost()"
+    >
+      Update Post
+    </button>
+
+    <!-- Delete Button -->
+    <button
+      *ngIf="post"
+      class="p-button p-button-rounded p-button-danger"
+      (click)="onDeletePost()"
+    >
+      Delete Post
+    </button>
+  </div>
+</div>

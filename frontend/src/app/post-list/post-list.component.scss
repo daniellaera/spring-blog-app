@@ -1,0 +1,71 @@
+.post-list {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 1.5rem;
+}
+
+.custom-card {
+  width: 100%;
+  max-width: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .p-card-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: #555;
+    margin: 1rem 0;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Optional */
+  }
+
+  .p-card-footer {
+    text-align: center;
+  }
+}
+
+.read-more-button {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.p-d-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.p-d-flex .p-badge {
+  margin-left: 5px;
+}
+
+.p-mr-2 {
+  margin-right: 8px;
+}

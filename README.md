@@ -38,6 +38,10 @@ This Spring Boot application serves as a blog platform, allowing users to create
 ]
 ```
 
+<div align="center">
+    <img src="screenshots/logo_banner.png" alt="localhost-first-run" width="300"/>
+</div>
+
 ## Table of Contents
 
 - [Project Setup](#project-setup)

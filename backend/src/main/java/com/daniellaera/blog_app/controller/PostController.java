@@ -41,6 +41,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
+    @PutMapping("/{postId}")
+    public ResponseEntity<PostDTO> updatePost(@PathVariable Long postId, @RequestBody PostDTO postDto) {
+        PostDTO post = postService.updatePost(postId, postDto);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<PostDTO> deletePost(@PathVariable Long id) {
         postService.deleteById(id);

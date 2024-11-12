@@ -4,9 +4,18 @@ import java.util.List;
 
 public class PostDTO {
 
+    private Long id;
     private String title;
     private String content;
     private List<CommentDTO> comments;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

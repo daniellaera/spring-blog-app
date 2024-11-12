@@ -1,0 +1,70 @@
+.post-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .p-field {
+    margin-bottom: 1.5rem;
+    label {
+      font-weight: bold;
+    }
+  }
+
+  .p-inputtext, .p-textarea {
+    width: 100%;
+  }
+
+  .p-textarea {
+    resize: vertical;
+  }
+
+  .p-d-flex {
+    gap: 16px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  /* Button Styles */
+  .p-button-rounded {
+    border-radius: 50px;
+  }
+
+  .p-button-primary:hover {
+    background-color: #007bff !important;
+  }
+
+  .p-button-success:hover {
+    background-color: #28a745 !important;
+  }
+
+  /* Custom styles for Delete button */
+  .custom-delete-btn {
+    background-color: transparent; /* Remove the default red background */
+    border: none; /* No border */
+    color: #333; /* Dark text color */
+    box-shadow: none; /* Remove any shadows */
+    font-weight: bold;
+
+    &:hover {
+      background-color: #f8f8f8; /* Light background on hover */
+      color: #dc3545; /* Dark red text on hover */
+    }
+
+    &:focus {
+      box-shadow: none; /* Remove focus shadow */
+    }
+  }
+
+  /* Button Hover */
+  .p-button-success:hover {
+    background-color: #28a745 !important;
+  }
+}
