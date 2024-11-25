@@ -23,6 +23,7 @@ import {PostDTO} from '../dto/post.dto';
 export class PostListComponent implements OnInit {
   posts: PostDTO[] = [];
   selectedPost: PostDTO | null = null; // To keep track of the selected post for editing
+  loading: boolean = false; // Track loading state
 
   constructor(private postService: PostService) { }
 
@@ -31,6 +32,7 @@ export class PostListComponent implements OnInit {
   }
 
   loadPosts() {
+    this.loading = true; // Start loader
     this.postService.getPosts().subscribe({
       next: (data) => {
         this.posts = data.map(post => ({
@@ -38,8 +40,12 @@ export class PostListComponent implements OnInit {
           comments: post.comments || []  // Ensure comments is always an array
         }));
       },
+      complete: (() => {
+        this.loading = false; // Stop loader
+      }),
       error: (err) => {
         console.error('Error fetching posts:', err);
+        this.loading = false; // Stop loader
       }
     });
   }

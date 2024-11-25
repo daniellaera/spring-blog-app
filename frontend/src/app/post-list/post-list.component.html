@@ -1,4 +1,9 @@
-<div class="post-list">
+<div *ngIf="loading" class="loading-container">
+  <h2>Loading data from the server, please be patient...</h2>
+  <div class="spinner"></div> <!-- Replace with a spinner component or CSS animation -->
+</div>
+
+<div *ngIf="!loading" class="post-list">
   <h2>List of Posts</h2>
 
   <!-- Post Form for adding or editing a post -->
