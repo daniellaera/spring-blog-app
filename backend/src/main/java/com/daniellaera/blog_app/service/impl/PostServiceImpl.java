@@ -55,44 +55,43 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("Post not found");
         }
         Post existingPost = post.get();
-        existingPost.setTitle(postDto.getTitle());
-        existingPost.setContent(postDto.getContent());
+        existingPost.setTitle(postDto.title());
+        existingPost.setContent(postDto.content());
 
         Post saved = postRepository.save(existingPost);
         return convertToDTO(saved);
     }
 
     private PostDTO convertToDTO(Post post) {
-        PostDTO postDTO = new PostDTO();
-        postDTO.setId(post.getId());
-        postDTO.setContent(post.getContent());
-        postDTO.setTitle(post.getTitle());
+
 
         List<CommentDTO> commentDTOList =
                 (post.getComments() != null) ? post.getComments()
-                .stream()
-                .map(this::convertCommentToCommentDto)
-                .toList() : List.of();
-        postDTO.setComments(commentDTOList);
-        return postDTO;
+                        .stream()
+                        .map(this::convertCommentToCommentDto)
+                        .toList() : List.of();
+        return new PostDTO(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                commentDTOList
+        );
     }
 
     private CommentDTO convertCommentToCommentDto(Comment comment) {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setText(comment.getText());
-        return commentDTO;
+        return new CommentDTO(comment.getText());
     }
 
     private Comment convertCommentDtoToCommentEntity(CommentDTO commentDTO) {
         Comment comment = new Comment();
-        comment.setText(commentDTO.getText());
+        comment.setText(commentDTO.text());
         return comment;
     }
 
     private Post convertToEntity(PostDTO postDTO) {
         Post post = new Post();
 
-        List<Comment> comments = Optional.ofNullable(postDTO.getComments())
+        List<Comment> comments = Optional.ofNullable(postDTO.comments())
                 .orElse(List.of())
                 .stream()
                 .map(commentDTO -> {
@@ -103,8 +102,8 @@ public class PostServiceImpl implements PostService {
                 .toList();
         post.setComments(comments);
 
-        post.setContent(postDTO.getContent());
-        post.setTitle(postDTO.getTitle());
+        post.setContent(postDTO.content());
+        post.setTitle(postDTO.title());
         return post;
     }
 }

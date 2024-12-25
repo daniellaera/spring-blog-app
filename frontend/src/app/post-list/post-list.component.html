@@ -1,40 +1,65 @@
+<!-- Loading Section -->
 <div *ngIf="loading" class="loading-container">
-  <h2>Loading data from the server, please be patient...</h2>
-  <div class="spinner"></div> <!-- Replace with a spinner component or CSS animation -->
+  <h2 class="text-primary">Loading data from the server, please wait...</h2>
+  <p-progressSpinner></p-progressSpinner>
 </div>
 
+<!-- Post List Section -->
 <div *ngIf="!loading" class="post-list">
-  <h2>List of Posts</h2>
+  <h2 class="p-text-center">Posts</h2>
 
-  <!-- Post Form for adding or editing a post -->
-  <app-post-form
-    [post]="selectedPost"
-    (postUpdated)="onPostUpdated($event)"
-    (postAdded)="onPostAdded($event)"
-    (postDeleted)="onPostDeleted($event)">
-  </app-post-form>
+  <!-- Add New Post Button -->
+  <div class="p-text-center p-mb-4">
+    <button
+      class="p-button p-button-rounded p-button-primary"
+      (click)="showModal = true"
+    >
+      <i class="pi pi-plus-circle p-mr-2"></i> Add New Post
+    </button>
+  </div>
 
-  <ul>
-    <li *ngFor="let post of posts">
-      <p-card class="custom-card" header="{{ post.title }}">
+  <!-- Posts Grid -->
+  <div class="p-grid p-justify-center">
+    <div class="p-col-12 p-md-6 p-lg-4 p-d-flex p-jc-center" *ngFor="let post of posts">
+      <p-card
+        header="{{ post.title }}"
+        class="post-card p-mb-3"
+      >
         <p>{{ post.content }}</p>
         <ng-template pTemplate="footer">
-          <div class="p-d-flex p-ai-center p-jc-between">
+          <div class="p-d-flex p-jc-between p-ai-center">
+            <!-- View Details Button -->
             <button
-              pButton
-              label="Edit"
-              icon="pi pi-pencil"
-              (click)="onUpdatePost(post)">
+              class="p-button p-button-text p-button-primary"
+              [routerLink]="['/post', post.id]"
+            >
+              <i class="pi pi-eye p-mr-2"></i> View Details
             </button>
 
-            <!-- Comment Icon and Count -->
-            <div *ngIf="post.comments && post.comments.length > 0" class="p-d-flex p-ai-center">
-              <i class="pi pi-comment p-mr-2"></i>
-              <span class="p-badge p-badge-info">{{ post.comments.length }}</span>
+            <!-- Comments Count -->
+            <div
+              *ngIf="post.comments && post.comments.length > 0"
+              class="p-d-flex p-ai-center"
+            >
+              <i class="pi pi-comments p-mr-1"></i>
+              <p-badge [value]="post.comments.length" class="p-badge-primary"></p-badge>
             </div>
           </div>
         </ng-template>
       </p-card>
-    </li>
-  </ul>
+    </div>
+  </div>
+
+  <!-- Add Post Dialog -->
+  <p-dialog
+    header="Add New Post"
+    [(visible)]="showModal"
+    [style]="{ width: '50vw' }"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="false"
+    (onHide)="onModalClose()"
+  >
+    <app-post-form (postAdded)="onPostAdded($event)"></app-post-form>
+  </p-dialog>
 </div>

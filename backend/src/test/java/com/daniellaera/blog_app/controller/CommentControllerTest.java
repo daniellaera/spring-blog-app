@@ -42,8 +42,7 @@ class CommentControllerTest {
 
     @Test
     void createComment() throws Exception {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setText("This is a comment");
+        CommentDTO commentDTO = new CommentDTO("This is a comment");
 
         given(commentService.addComment(anyLong(), any(CommentDTO.class))).willReturn(commentDTO);
         String reqBody = new ObjectMapper().writeValueAsString(commentDTO);
@@ -57,11 +56,8 @@ class CommentControllerTest {
 
     @Test
     void getCommentsByPost() throws Exception {
-        CommentDTO comment1 = new CommentDTO();
-        comment1.setText("Comment 1");
-
-        CommentDTO comment2 = new CommentDTO();
-        comment2.setText("Comment 2");
+        CommentDTO comment1 = new CommentDTO("Comment 1");
+        CommentDTO comment2 = new CommentDTO("Comment 2");
 
         List<CommentDTO> comments = Arrays.asList(comment1, comment2);
         given(commentService.getAllCommentsByPostId(anyLong())).willReturn(comments);
@@ -88,8 +84,7 @@ class CommentControllerTest {
 
     @Test
     void updateComment() throws Exception {
-        CommentDTO updatedCommentDTO = new CommentDTO();
-        updatedCommentDTO.setText("Updated comment");
+        CommentDTO updatedCommentDTO = new CommentDTO("Updated comment");
 
         given(commentService.updateComment(anyLong(), any(CommentDTO.class))).willReturn(updatedCommentDTO);
         String reqBody = new ObjectMapper().writeValueAsString(updatedCommentDTO);

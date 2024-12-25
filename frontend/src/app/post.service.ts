@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../environments/environment';
 import {PostDTO} from './dto/post.dto';
@@ -20,6 +20,10 @@ export class PostService {
     return this.http.get<PostDTO[]>(this.apiUrl);  // Making a GET request to the backend API
   }
 
+  getPostById(postId: number): Observable<PostDTO> {
+    return this.http.get<PostDTO>(`${this.apiUrl}/${postId}`);
+  }
+
   // Create a new post
   createPost(post: PostDTO): Observable<PostDTO> {
     return this.http.post<PostDTO>(this.apiUrl, post);  // POST request to create a new post
@@ -35,7 +39,7 @@ export class PostService {
   }
 
   // Delete a post by its ID
-  deletePost(postId: number): Observable<void> {
+  deletePost(postId: number | undefined): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${postId}`);  // DELETE request to delete a post
   }
 }

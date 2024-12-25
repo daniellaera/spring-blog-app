@@ -63,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
             throw new RuntimeException("Comment not found");
         }
         Comment entity = comment.get();
-        entity.setText(commentDTO.getText());
+        entity.setText(commentDTO.text());
 
         Comment saved = commentRepository.save(entity);
         return convertToDto(saved);
@@ -71,13 +71,11 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment convertToEntity(CommentDTO commentDTO) {
         Comment comment = new Comment();
-        comment.setText(commentDTO.getText());
+        comment.setText(commentDTO.text());
         return comment;
     }
 
     private CommentDTO convertToDto(Comment comment) {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setText(comment.getText());
-        return commentDTO;
+        return new CommentDTO(comment.getText());
     }
 }

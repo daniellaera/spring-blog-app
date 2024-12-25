@@ -1,0 +1,27 @@
+/* Ensure the button does not take full width */
+.p-field {
+  margin-bottom: 1.5rem;
+}
+
+textarea {
+  font-family: inherit;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.small-button {
+  padding: 0.4rem 1rem !important; /* Adjust button padding */
+  font-size: 0.85rem !important;   /* Adjust button font size */
+  width: auto !important;          /* Prevent full-width button */
+  display: inline-flex;            /* Align content inside the button */
+  align-items: center;
+  justify-content: center;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-start {
+  justify-content: flex-start; /* Align button to the start */
+}

@@ -100,9 +100,7 @@ public class CommentServiceTest {
 
 
     private CommentDTO convertToDTO(Comment comment) {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setText(comment.getText());
-        return commentDTO;
+        return new CommentDTO(comment.getText());
     }
 
 }

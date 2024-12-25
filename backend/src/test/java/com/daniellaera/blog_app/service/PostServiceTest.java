@@ -47,8 +47,8 @@ class PostServiceTest {
 
         assertNotNull(postDTOList);
         assertEquals(2, postDTOList.size());
-        assertEquals(post1.getTitle(), postDTOList.getFirst().getTitle());
-        assertEquals(post1.getContent(), postDTOList.getFirst().getContent());
+        assertEquals(post1.getTitle(), postDTOList.getFirst().title());
+        assertEquals(post1.getContent(), postDTOList.getFirst().content());
 
         verify(postRepository, times(1)).findAll();
     }
@@ -66,9 +66,9 @@ class PostServiceTest {
         PostDTO saved = postService.createPost(postDTO);
 
         assertNotNull(saved, "Saved post should not be null");
-        assertEquals(saved.getTitle(), postDTO.getTitle(), "Title should be the same");
-        assertEquals(saved.getContent(), postDTO.getContent(), "Content should be the same");
-        assertTrue(saved.getComments().isEmpty());
+        assertEquals(saved.title(), postDTO.title(), "Title should be the same");
+        assertEquals(saved.content(), postDTO.content(), "Content should be the same");
+        assertTrue(saved.comments().isEmpty());
 
         verify(postRepository).save(any(Post.class));
     }
@@ -83,8 +83,8 @@ class PostServiceTest {
 
         Optional<PostDTO> postDTO = postService.getPostById(1L);
         assertTrue(postDTO.isPresent(), "Post should be present");
-        assertEquals("title", postDTO.get().getTitle(), "Title should match");
-        assertEquals("content", postDTO.get().getContent(), "Content should match");
+        assertEquals("title", postDTO.get().title(), "Title should match");
+        assertEquals("content", postDTO.get().content(), "Content should match");
     }
 
     @Test
@@ -98,11 +98,9 @@ class PostServiceTest {
 
     @Test
     void getPostDTOToString() {
-        PostDTO post = new PostDTO();
-        post.setTitle("title");
-        post.setContent("content");
+        PostDTO post = new PostDTO(1L, "title", "content", List.of());
 
-        String expected = "PostDTO{title='title', content='content'}";
+        String expected = "PostDTO[id=1, title=title, content=content, comments=[]]";
         assertEquals(expected, post.toString());
     }
 
@@ -118,9 +116,6 @@ class PostServiceTest {
     }
 
     private PostDTO convertToDto(Post post) {
-        PostDTO postDTO = new PostDTO();
-        postDTO.setTitle(post.getTitle());
-        postDTO.setContent(post.getContent());
-        return postDTO;
+        return new PostDTO(1L, "title", "content", List.of());
     }
 }

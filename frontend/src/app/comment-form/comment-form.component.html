@@ -1,0 +1,37 @@
+<form (ngSubmit)="onSubmit(commentForm)" #commentForm="ngForm" class="p-fluid">
+  <!-- Comment Field -->
+  <div class="p-field">
+    <label for="commentText">Your Comment</label>
+    <textarea
+      id="commentText"
+      [(ngModel)]="commentText"
+      name="text"
+      rows="5"
+      class="p-inputtext p-component"
+      placeholder="Write your comment here..."
+      required
+    ></textarea>
+    <!-- Validation Message -->
+    <p-message
+      *ngIf="commentForm.controls['text']?.invalid && commentForm.controls['text']?.dirty"
+      severity="error"
+      text="Comment is required."
+    ></p-message>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="p-field p-mt-3 d-flex justify-content-start">
+    <button
+      type="submit"
+      pButton
+      label="Submit"
+      [disabled]="!commentForm.valid"
+      icon="pi pi-send"
+      class="p-button-primary small-button"
+    ></button>
+  </div>
+
+  <p class="p-mt-2">
+    <small>Ensure your comment is constructive and adds value.</small>
+  </p>
+</form>

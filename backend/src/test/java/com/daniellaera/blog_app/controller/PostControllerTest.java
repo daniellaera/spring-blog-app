@@ -45,17 +45,9 @@ class PostControllerTest {
 
     @Test
     void getPosts() throws Exception {
-        PostDTO post1 = new PostDTO();
-        post1.setTitle("title");
-        post1.setContent("content");
-
-        PostDTO post2 = new PostDTO();
-        post2.setTitle("title2");
-        post2.setContent("content2");
-
-        PostDTO post3 = new PostDTO();
-        post3.setTitle("title2");
-        post3.setContent("content2");
+        PostDTO post1 = new PostDTO(1L, "title", "content", List.of());
+        PostDTO post2 = new PostDTO(2L, "title2", "content2", List.of());
+        PostDTO post3 = new PostDTO(3L, "title3", "content3", List.of());
 
         List<PostDTO> posts = Arrays.asList(post1, post2, post3);
         given(postService.getAllPosts()).willReturn(posts);
@@ -75,23 +67,11 @@ class PostControllerTest {
 
     @Test
     void getPostsWithComments() throws Exception {
-        PostDTO post1 = new PostDTO();
-        post1.setTitle("title");
-        post1.setContent("content");
+        CommentDTO comment1 = new CommentDTO("First comment");
+        CommentDTO comment2 = new CommentDTO("Second comment");
 
-        CommentDTO comment1 = new CommentDTO();
-        comment1.setText("First comment");
-        CommentDTO comment2 = new CommentDTO();
-        comment2.setText("Second comment");
-        post1.setComments(Arrays.asList(comment1, comment2));
-
-        PostDTO post2 = new PostDTO();
-        post2.setTitle("title2");
-        post2.setContent("content2");
-
-        CommentDTO comment3 = new CommentDTO();
-        comment3.setText("Another comment");
-        post2.setComments(List.of(comment3));
+        PostDTO post1 = new PostDTO(1L, "title", "content", List.of(comment1, comment2));
+        PostDTO post2 = new PostDTO(2L, "title2", "content2", List.of(new CommentDTO("Another comment")));
 
         List<PostDTO> posts = Arrays.asList(post1, post2);
         given(postService.getAllPosts()).willReturn(posts);
@@ -119,11 +99,9 @@ class PostControllerTest {
 
     @Test
     void getPostById() throws Exception {
-        PostDTO post1 = new PostDTO();
-        post1.setTitle("title");
-        post1.setContent("content");
+        PostDTO post = new PostDTO(1L, "title", "content", List.of());
 
-        given(postService.getPostById(any(Long.class))).willReturn(Optional.of(post1));
+        given(postService.getPostById(any(Long.class))).willReturn(Optional.of(post));
         mockMvc.perform(get("/api/v3/post/" + 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -145,12 +123,10 @@ class PostControllerTest {
 
     @Test
     void createPost() throws Exception {
-        PostDTO post1 = new PostDTO();
-        post1.setTitle("title");
-        post1.setContent("content");
+        PostDTO post = new PostDTO(1L, "title", "content", List.of());
 
-        given(postService.createPost(refEq(post1))).willReturn(post1);
-        String reqBody = new ObjectMapper().writeValueAsString(post1);
+        given(postService.createPost(refEq(post))).willReturn(post);
+        String reqBody = new ObjectMapper().writeValueAsString(post);
 
         mockMvc.perform(post("/api/v3/post")
                         .contentType(MediaType.APPLICATION_JSON)

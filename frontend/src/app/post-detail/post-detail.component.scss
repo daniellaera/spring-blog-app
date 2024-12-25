@@ -1,0 +1,35 @@
+.comments-section {
+  .comment-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .comment-item {
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+
+    .pi-comment {
+      font-size: 1.25rem;
+      color: #007ad9;
+    }
+
+    span {
+      font-size: 1rem;
+      margin-left: 0.5rem;
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    color: #495057;
+  }
+
+  .alert {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+}

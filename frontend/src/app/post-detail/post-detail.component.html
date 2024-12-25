@@ -1,0 +1,41 @@
+<div *ngIf="!loading && post" class="container my-5">
+  <!-- Back to Home Button -->
+  <div class="d-flex justify-content-start mb-4">
+    <button class="p-button p-button-rounded p-button-success" (click)="navigateHome()">
+      <i class="pi pi-arrow-left me-2"></i> Back to Home
+    </button>
+  </div>
+
+  <!-- Post Form -->
+  <app-post-form
+    [post]="post"
+    (postUpdated)="onUpdatePost($event)"
+    (postDeleted)="onDeletePost(post.id)"
+    class="mb-5"
+  >
+  </app-post-form>
+
+  <div class="comments-section">
+    <h3 class="text-secondary mb-3">Comments</h3>
+
+    <!-- Comment Form -->
+    <app-comment-form
+      [postId]="post.id ?? 0"
+      (commentAdded)="onCommentAdded($event)"
+    ></app-comment-form>
+
+    <!-- Comments List -->
+    <div *ngIf="post.comments && post.comments.length > 0; else noComments" class="comment-list mt-4">
+      <div *ngFor="let comment of post.comments" class="comment-item p-shadow-2 p-p-3 p-mb-3">
+        <i class="pi pi-comment text-primary p-mr-2"></i>
+        <span>{{ comment.text }}</span>
+      </div>
+    </div>
+
+    <ng-template #noComments>
+      <div class="alert alert-warning mt-3" role="alert">
+        No comments yet.
+      </div>
+    </ng-template>
+  </div>
+</div>
