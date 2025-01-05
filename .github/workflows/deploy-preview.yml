@@ -33,6 +33,7 @@ jobs:
         uses: neondatabase/create-branch-action@v5
         with:
           project_id: ${{ env.NEON_PROJECT_ID }}
+          database: my-awesome-blog-db
           username: "my-awesome-blog-db_owner" # Replace with your DB role
           branch_name: preview/${{ steps.branch-name.outputs.current_branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
