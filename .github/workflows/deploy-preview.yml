@@ -56,7 +56,8 @@ jobs:
 
       # Step 6: Deploy backend to Fly.io preview app
       - name: Deploy Backend Preview
+        working-directory: ./backend
         id: deploy
-        uses: superfly/fly-pr-review-apps@1.3.0
+        uses: superfly/fly-pr-review-apps@1.2.1
         with:
           secrets: DATABASE_URL=$DATABASE_URL
