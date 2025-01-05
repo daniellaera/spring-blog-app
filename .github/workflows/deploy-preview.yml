@@ -54,10 +54,13 @@ jobs:
         working-directory: ./backend
         run: mvn clean verify
 
+      - name: Set up Fly CLI
+        uses: superfly/fly-pr-review-apps@1.2.1
+
       # Step 6: Deploy backend to Fly.io preview app
       - name: Deploy Backend Preview
         working-directory: ./backend
-        id: deploy
-        uses: superfly/fly-pr-review-apps@1.2.1
-        with:
-          secrets: DATABASE_URL=$DATABASE_URL
+        env:
+          DATABASE_URL: $DATABASE_URL
+        run: |
+          flyctl deploy --remote-only
