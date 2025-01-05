@@ -41,8 +41,17 @@ jobs:
       # Step 4: Set JDBC_DATABASE_URL
       - name: Set JDBC_DATABASE_URL
         run: |
-          POSTGRESQL_URL="${{ steps.create-branch.outputs.db_url_with_pooler }}"
-          JDBC_URL="jdbc:postgresql://${POSTGRESQL_URL#postgresql://}?sslmode=require"
+          # Extract components from the provided Neon database URL
+          NEON_DB_URL="${{ steps.create-branch.outputs.db_url }}"
+          USERNAME=$(echo $NEON_DB_URL | sed -n 's|.*//\([^:]*\):.*|\1|p')
+          PASSWORD=$(echo $NEON_DB_URL | sed -n 's|.*//[^:]*:\([^@]*\)@.*|\1|p')
+          HOST=$(echo $NEON_DB_URL | sed -n 's|.*@\(.*\)/.*|\1|p')
+          DATABASE=$(echo $NEON_DB_URL | sed -n 's|.*/\([^?]*\)?.*|\1|p')
+          
+          # Construct the JDBC URL
+          JDBC_URL="jdbc:postgresql://$HOST:5432/$DATABASE?user=$USERNAME&password=$PASSWORD&sslmode=require"
+          
+          # Set the DATABASE_URL environment variable
           echo "DATABASE_URL=$JDBC_URL" >> $GITHUB_ENV
 
       # Step 5: Build and Test Backend
