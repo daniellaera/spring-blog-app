@@ -40,7 +40,7 @@ jobs:
 
       # Step 4: Set DATABASE_URL for Neon
       - name: Set DATABASE_URL
-        run: echo "DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}" >> $GITHUB_ENV
+        run: echo "DATABASE_URL=jdbc:postgresql://ep-tight-heart-a2tquoil.eu-central-1.aws.neon.tech:5432/my-awesome-blog-db?sslmode=require" >> $GITHUB_ENV
 
       # Step 5: Build and Test Backend
       - name: Set up JDK 21
