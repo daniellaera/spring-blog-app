@@ -1,0 +1,61 @@
+name: Preview Deployment
+on: [ pull_request ]
+
+permissions:
+  contents: write
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+
+jobs:
+  deploy-preview-backend:
+    name: Deploy Backend Preview
+    runs-on: ubuntu-latest
+
+    # Only run one deployment at a time per PR.
+    concurrency:
+      group: pr-${{ github.event.number }}
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Get the branch name
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v8
+
+      # Step 3: Create a Neon DB branch
+      - name: Create Neon DB branch
+        id: create-branch
+        uses: neondatabase/create-branch-action@v5
+        with:
+          project_id: ${{ env.NEON_PROJECT_ID }}
+          username: "my-awesome-blog-db_owner" # Replace with your DB role
+          branch_name: preview/${{ steps.branch-name.outputs.current_branch }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      # Step 4: Set DATABASE_URL for Neon
+      - name: Set DATABASE_URL
+        run: echo "DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}" >> $GITHUB_ENV
+
+      # Step 5: Build and Test Backend
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build and Test Backend
+        working-directory: ./backend
+        run: mvn clean verify
+
+      # Step 6: Deploy backend to Fly.io preview app
+      - name: Deploy Backend Preview
+        id: deploy
+        uses: superfly/fly-pr-review-apps@1.2.1
+        with:
+          secrets: DATABASE_URL=$DATABASE_URL
