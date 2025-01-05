@@ -38,10 +38,12 @@ jobs:
           branch_name: preview/${{ steps.branch-name.outputs.current_branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
 
-      # Step 4: Set DATABASE_URL for Neon
-      - name: Set DATABASE_URL
+      # Step 4: Set JDBC_DATABASE_URL
+      - name: Set JDBC_DATABASE_URL
         run: |
-          echo "DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}" >> $GITHUB_ENV
+          POSTGRESQL_URL="${{ steps.create-branch.outputs.db_url_with_pooler }}"
+          JDBC_URL="jdbc:postgresql://${POSTGRESQL_URL#postgresql://}?sslmode=require"
+          echo "DATABASE_URL=$JDBC_URL" >> $GITHUB_ENV
 
       # Step 5: Build and Test Backend
       - name: Set up JDK 21
