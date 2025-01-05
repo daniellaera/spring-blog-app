@@ -12,6 +12,7 @@ public class Post {
     private Long id;
     private String title;
     private String content;
+    private String author;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Comment> comments;
@@ -37,6 +38,14 @@ public class Post {
 
     public String getContent() {
         return content;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public void setContent(String content) {

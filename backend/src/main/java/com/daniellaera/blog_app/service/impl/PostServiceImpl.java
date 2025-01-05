@@ -57,6 +57,7 @@ public class PostServiceImpl implements PostService {
         Post existingPost = post.get();
         existingPost.setTitle(postDto.title());
         existingPost.setContent(postDto.content());
+        existingPost.setAuthor(postDto.author());
 
         Post saved = postRepository.save(existingPost);
         return convertToDTO(saved);
@@ -74,6 +75,7 @@ public class PostServiceImpl implements PostService {
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
+                post.getAuthor(),
                 commentDTOList
         );
     }
