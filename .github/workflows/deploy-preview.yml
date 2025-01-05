@@ -59,6 +59,5 @@ jobs:
         id: deploy
         uses: superfly/fly-pr-review-apps@1.3.0
         with:
-          token:
           path: ./backend
           secrets: DATABASE_URL=$DATABASE_URL FLY_API_TOKEN=$FLY_API_TOKEN
