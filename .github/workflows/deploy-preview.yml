@@ -61,3 +61,5 @@ jobs:
         with:
           path: ./backend
           secrets: DATABASE_URL=$DATABASE_URL
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
