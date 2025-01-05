@@ -59,6 +59,7 @@ jobs:
       - name: Deploy Backend Preview
         id: deploy
         uses: superfly/fly-pr-review-apps@1.3.0
+        env: ${{ secrets.FLY_DEPLOY_TOKEN }}
         with:
           path: ./backend
-          secrets: DATABASE_URL=$DATABASE_URL FLY_DEPLOY_TOKEN=$FLY_DEPLOY_TOKEN
+          secrets: DATABASE_URL=$DATABASE_URL
