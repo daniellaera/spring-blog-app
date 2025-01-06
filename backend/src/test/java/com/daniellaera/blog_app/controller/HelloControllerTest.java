@@ -26,6 +26,6 @@ public class HelloControllerTest {
 
     @Test
     void testHello() throws Exception {
-        mockMvc.perform(get("")).andExpect(content().string("Welcome to Spring Boot Application !"));
+        mockMvc.perform(get("")).andExpect(content().string("Welcome to Spring Boot Application!"));
     }
 }

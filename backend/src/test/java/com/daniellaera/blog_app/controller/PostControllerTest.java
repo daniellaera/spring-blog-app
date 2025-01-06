@@ -45,9 +45,9 @@ class PostControllerTest {
 
     @Test
     void getPosts() throws Exception {
-        PostDTO post1 = new PostDTO(1L, "title", "content", List.of());
-        PostDTO post2 = new PostDTO(2L, "title2", "content2", List.of());
-        PostDTO post3 = new PostDTO(3L, "title3", "content3", List.of());
+        PostDTO post1 = new PostDTO(1L, "title", "content", "Jean marc", List.of());
+        PostDTO post2 = new PostDTO(2L, "title2", "content2", "Christophe", List.of());
+        PostDTO post3 = new PostDTO(3L, "title3", "content3", "Denny", List.of());
 
         List<PostDTO> posts = Arrays.asList(post1, post2, post3);
         given(postService.getAllPosts()).willReturn(posts);
@@ -70,8 +70,8 @@ class PostControllerTest {
         CommentDTO comment1 = new CommentDTO("First comment");
         CommentDTO comment2 = new CommentDTO("Second comment");
 
-        PostDTO post1 = new PostDTO(1L, "title", "content", List.of(comment1, comment2));
-        PostDTO post2 = new PostDTO(2L, "title2", "content2", List.of(new CommentDTO("Another comment")));
+        PostDTO post1 = new PostDTO(1L, "title", "content","Jean marc", List.of(comment1, comment2));
+        PostDTO post2 = new PostDTO(2L, "title2", "content2","Christophe", List.of(new CommentDTO("Another comment")));
 
         List<PostDTO> posts = Arrays.asList(post1, post2);
         given(postService.getAllPosts()).willReturn(posts);
@@ -99,7 +99,7 @@ class PostControllerTest {
 
     @Test
     void getPostById() throws Exception {
-        PostDTO post = new PostDTO(1L, "title", "content", List.of());
+        PostDTO post = new PostDTO(1L, "title", "content","Rubert", List.of());
 
         given(postService.getPostById(any(Long.class))).willReturn(Optional.of(post));
         mockMvc.perform(get("/api/v3/post/" + 1)
@@ -123,7 +123,7 @@ class PostControllerTest {
 
     @Test
     void createPost() throws Exception {
-        PostDTO post = new PostDTO(1L, "title", "content", List.of());
+        PostDTO post = new PostDTO(1L, "title", "content", "Lucas", List.of());
 
         given(postService.createPost(refEq(post))).willReturn(post);
         String reqBody = new ObjectMapper().writeValueAsString(post);

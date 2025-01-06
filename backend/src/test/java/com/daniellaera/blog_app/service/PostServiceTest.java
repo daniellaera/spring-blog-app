@@ -98,9 +98,9 @@ class PostServiceTest {
 
     @Test
     void getPostDTOToString() {
-        PostDTO post = new PostDTO(1L, "title", "content", List.of());
+        PostDTO post = new PostDTO(1L, "title", "content", "Jean-Marie", List.of());
 
-        String expected = "PostDTO[id=1, title=title, content=content, comments=[]]";
+        String expected = "PostDTO[id=1, title=title, content=content, author=Jean-Marie, comments=[]]";
         assertEquals(expected, post.toString());
     }
 
@@ -116,6 +116,6 @@ class PostServiceTest {
     }
 
     private PostDTO convertToDto(Post post) {
-        return new PostDTO(1L, "title", "content", List.of());
+        return new PostDTO(1L, "title", "content", "Eddy", List.of());
     }
 }
