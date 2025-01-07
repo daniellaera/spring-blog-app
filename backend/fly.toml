@@ -1,7 +1,7 @@
 # fly.toml app configuration file generated for blog-app-black-pine-3535 on 2024-10-31T12:45:04+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
+
 
 app = 'blog-app-black-pine-3535'
 primary_region = 'cdg'
