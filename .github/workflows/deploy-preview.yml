@@ -71,6 +71,7 @@ jobs:
         id: deploy
         uses: superfly/fly-pr-review-apps@1.3.0
         with:
+          ha: 'true'
           region: cdg
           memory: '512'
           cpukind: 'shared'
