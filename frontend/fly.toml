@@ -17,10 +17,7 @@ primary_region = 'cdg'
   processes = ['app']
 
 [[services]]
-  internal_port = 80
   processes = ["app"]
-  protocol = "tcp"
-  script_checks = []
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
