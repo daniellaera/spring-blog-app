@@ -74,6 +74,6 @@ jobs:
           region: cdg
           memory: '512'
           cpukind: 'shared'
-          vmsize: 'shared-cpu-2x'
+          vmsize: 'shared-cpu-1x'
           path: ./backend
           secrets: DATABASE_URL=${{ env.DATABASE_URL }}
