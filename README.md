@@ -1,190 +1,177 @@
-# Spring Blog Application
+# Spring Blog App
 
-[![Deploy Spring Boot App](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml/badge.svg)](https://github.com/daniellaera/spring-blog-app/actions/workflows/main.yml)
-![Coverage](https://raw.githubusercontent.com/daniellaera/spring-blog-app/badges/badges/jacoco.svg)
+> Passwordless blog platform built with Spring Boot 4 and Angular 21 using WebAuthn/Passkeys for authentication.
 
-This Spring Boot application serves as a blog platform, allowing users to create, read, update, and delete blog posts. The user can also comment each post.
+## Tech stack
 
-> Go on that URL as example *http://blog-app-black-pine-3535.fly.dev/api/v3/post* and you will see the list of posts
-```json
-[
-  {
-    "title": "Title 1",
-    "content": "Content 1",
-    "comments": [
-      {
-        "text": "comment 1"
-      }
-    ]
-  },
-  {
-    "title": "Title 2",
-    "content": "Content 2",
-    "comments": [
-      {
-        "text": "comment 2"
-      }
-    ]
-  },
-  {
-    "title": "Title 3",
-    "content": "Content 3",
-    "comments": [
-      {
-        "text": "comment 3"
-      }
-    ]
-  }
-]
-```
+**Backend**
+- Java 21
+- Spring Boot 4.0.6
+- Spring Security 7
+- PostgreSQL 17
+- Flyway 11 (migrations + seed data)
+- Yubico webauthn-server-core 2.9.0
+- Testcontainers 2.0.5
 
-<div align="center">
-    <img src="screenshots/logo_banner.png" alt="localhost-first-run" width="300"/>
-</div>
+**Frontend**
+- Angular 21
+- PrimeNG 21 (Aura theme)
+- @simplewebauthn/browser 13
+- PrimeFlex
+- Inter font
 
-## Table of Contents
+## Features
 
-- [Project Setup](#project-setup)
-- [Technologies Used](#technologies-used)
-- [Running the Application](#running-the-application)
-- [Configuration](#configuration)
-- [Building the Application](#building-the-application)
-- [Endpoints](#endpoints)
-- [Testing](#testing)
-- [Deployment](#deployment)
+- Passwordless authentication via WebAuthn/Passkeys (Face ID, Touch ID, device PIN)
+- Passkey management — register, rename, delete credentials
+- Passkey desync handling — graceful errors when credential missing from device or DB
+- Blog posts — create, read, update, delete
+- Comments on posts — create, read, update
+- HTTP session-based auth (server-side session after passkey verification)
+- Fully reactive Angular UI with signals
 
-## Project Setup
+## Prerequisites
 
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/daniellaera/spring-blog-app.git
-   cd spring-blog-app
-   ```
+- Java 21+
+- Node 20+
+- PostgreSQL 17 running on `localhost:5432`
+- A browser with WebAuthn support (Chrome, Safari, Firefox — all modern versions)
 
-## Deployment Configuration
+## Getting started
 
-1. **Set Up Environment Variables**  
-   Configure the following environment variables in your GitHub Actions workflow file (`.yml`), in the deployment service's settings, or in the repository's secrets section:
-
-   - `DATABASE_URL`: The URL for your database connection (e.g., `jdbc:postgresql://<host>:<port>/<dbname>` for PostgreSQL).
-   - `DATABASE_USERNAME`: The username for your database.
-   - `DATABASE_PASSWORD`: The password for your database.
-
-   ### Example for GitHub Actions
-   You can set these environment variables as repository secrets in GitHub, and then reference them in your workflow file:
-
-   ```yaml
-   env:
-     DATABASE_URL: ${{ secrets.DATABASE_URL }}
-     DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-     DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-
-## Technologies Used
-
-- **Java** and **Spring Boot** for backend development
-- **PostgreSQL** as the relational database
-- **Flyway** for database migrations
-- **JUnit** and **Mockito** for unit and integration testing
-- **GitHub Actions** for CI/CD pipeline
-
-## Running the Application
-
-1. **Run the application locally** with:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-2. **Run with the dev profile to load configuration from application-dev.yml** with:
-   ```bash
-   ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
-   ```
-
-3. **Access the application** at `http://localhost:8080`
-
-## Configuration
-
-The application settings are primarily managed through `application.yml` with environment-specific values for:
-```yaml
-spring:
-  datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: none
-  flyway:
-    enabled: true
-```
-
-## Building the Application
-
-To build the application and create an executable JAR file:
+### 1. Clone the repo
 ```bash
-./mvnw clean package
+git clone https://github.com/daniellaera/spring-blog-app.git
+cd spring-blog-app
 ```
 
-## Endpoints
+### 2. Start PostgreSQL
 
-### Post Endpoints
-- `GET /api/v3/post` - Retrieves all blog posts
-- `GET /api/v3/post/{id}` - Retrieves a specific post by ID
-- `POST /api/v3/post` - Create new post
-- `DELETE /api/v3/post/{id}` - Delete a specific post by ID
+Start a local PostgreSQL instance and create the database:
 
-### Comment Endpoints
-- `GET /api/v3/{postId}/comments` - Retrieves all comments by postId
-- `POST /api/v3/comment/{postId}` - Create new comment on specific postId
-- `PATCH /api/v3/comment/{commentId}` - Update comment by ID
-
-## Testing
-
-Run tests with:
-```bash
-./mvnw test
-```
-The application includes unit tests for service layers and integration tests for the repository layer, ensuring data consistency and business logic reliability.
-
-## Deployment
-
-The application is configured to deploy using **Fly.io** via GitHub Actions. Ensure that the following GitHub Secrets are set for the deployment pipeline:
-- `FLY_API_TOKEN`
-- `DATABASE_URL`
-- `DATABASE_USERNAME`
-- `DATABASE_PASSWORD`
-
-## Flyway Migrations
-This SQL file, located in `src/main/resources/db/migration`, is processed by Flyway on startup if the database is missing this migration. It includes the initial table definitions and some sample data for testing:
-`V1__init.sql`
 ```sql
--- Create post table
-CREATE TABLE post (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255),
-    content TEXT
-);
-
--- Create comment table with foreign key to post table
-CREATE TABLE comment (
-    id SERIAL PRIMARY KEY,
-    text TEXT,
-    post_id BIGINT,
-    FOREIGN KEY (post_id) REFERENCES post(id)
-);
-
--- Insert initial data into post table
-INSERT INTO post (title, content)
-VALUES ('Title 1', 'Content 1'),
-       ('Title 2', 'Content 2'),
-       ('Title 3', 'Content 3'),
-       ('Title 4', 'Content 4');
-
--- Insert initial data into comment table
-INSERT INTO comment (text, post_id)
-VALUES ('comment 1', 1),
-       ('comment 2', 2),
-       ('comment 3', 3);
+CREATE DATABASE testdb;
+CREATE USER testuser WITH PASSWORD 'testpass';
+GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
 ```
 
-> *Tip: For safe versioning, avoid modifying applied migration files like `V1__init.sql`. Instead, create new migration files (e.g., `V2__add_column.sql`) for schema updates.*
+Or with Docker (one-off):
+
+```bash
+docker run -d \
+  --name blog-postgres \
+  -e POSTGRES_DB=testdb \
+  -e POSTGRES_USER=testuser \
+  -e POSTGRES_PASSWORD=testpass \
+  -p 5432:5432 \
+  postgres:17
+```
+
+### 3. Run the backend
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+Backend runs on http://localhost:8080.
+Flyway runs all 9 migrations and seeds demo data automatically on startup.
+
+### 4. Run the frontend
+```bash
+cd frontend
+npm install
+ng serve
+```
+
+Frontend runs on http://localhost:4200.
+
+## Passkey flow
+
+### Registration
+1. Enter username on `/register`
+2. Backend creates user account and returns a challenge (`POST /register/start`)
+3. Browser prompts for Face ID / Touch ID / PIN
+4. Passkey stored on device; public key verified and stored in DB (`POST /register/verify`)
+
+### Authentication
+1. Enter username on `/login`
+2. Backend returns a challenge (`POST /login/start`)
+3. Browser prompts for Face ID / Touch ID / PIN
+4. Backend verifies signature and creates a server-side session (`POST /login/verify`)
+5. Session cookie stored in browser; user redirected to app
+
+## API endpoints
+
+### Auth — Registration
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | /register/start | No | Get registration challenge |
+| POST | /register/verify | No | Complete registration |
+
+### Auth — Login
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | /login/start | No | Get authentication challenge |
+| POST | /login/verify | No | Complete authentication, create session |
+| GET | /session/me | Yes | Get current session user |
+
+### Posts
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | /api/v3/post | No | List all posts |
+| GET | /api/v3/post/{id} | No | Get post by id |
+| POST | /api/v3/post | Yes | Create post |
+| PUT | /api/v3/post/{id} | Yes | Update post |
+| DELETE | /api/v3/post/{id} | Yes | Delete post |
+
+### Comments
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | /api/v3/comment/{postId}/comments | No | List comments for a post |
+| POST | /api/v3/comment/{postId} | Yes | Add comment to post |
+| PATCH | /api/v3/comment/{commentId} | Yes | Update comment |
+
+### Passkeys
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | /api/user/passkeys | Yes | List user passkeys |
+| PATCH | /api/user/passkeys/{id} | Yes | Rename passkey |
+| DELETE | /api/user/passkeys/{id} | Yes | Remove passkey |
+| DELETE | /api/user/passkeys/orphaned | Yes | Remove stale passkeys (unused 90+ days) |
+
+## Project structure
+
+```
+├── backend/
+│   ├── src/main/java/       Spring Boot app
+│   ├── src/main/resources/
+│   │   └── db/migration/    Flyway SQL migrations (V1–V9)
+│   └── pom.xml
+└── frontend/
+    └── src/app/
+        ├── core/            Interceptors, guards, services
+        ├── features/        Auth, posts, account, user
+        ├── layout/          Navbar
+        └── shared/          Pipes, utils
+```
+
+## Running tests
+
+```bash
+cd backend && mvn test
+cd frontend && ng test --watch=false
+```
+
+Tests use Testcontainers to spin up a real PostgreSQL instance — no mocking.
+
+## Demo accounts
+
+After running migrations, two demo accounts are seeded (V9):
+
+| Username | Notes |
+|----------|-------|
+| daniel | Must register a passkey on first login |
+| alice | Must register a passkey on first login |
+
+> Passkeys are device-bound and cannot be seeded —
+> use `/register` to create your passkey after the account exists.
