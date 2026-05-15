@@ -1,0 +1,1 @@
+ALTER TABLE passkey ADD COLUMN authenticator_attachment VARCHAR(255);

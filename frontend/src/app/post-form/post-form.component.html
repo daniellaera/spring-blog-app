@@ -1,61 +1,48 @@
-<div class="post-form p-shadow-2 p-p-4 p-mb-5 p-border-round" style="max-width: 600px; margin: auto; background-color: #fff;">
-  <h3 class="p-text-center p-mb-4">{{ post ? 'Edit Post' : 'Add New Post' }}</h3>
-
-  <!-- Title Field -->
-  <div class="p-field">
-    <label for="titleInput">Title</label>
+<div class="flex flex-column gap-3">
+  <div class="flex flex-column gap-2">
+    <label for="titleInput" class="font-medium">Title</label>
     <input
-      id="titleInput"
       pInputText
+      id="titleInput"
       [(ngModel)]="title"
       name="title"
-      required
-      placeholder="Enter Post Title"
-      class="p-inputtext p-component"
-    />
+      placeholder="Enter post title"
+      class="w-full" />
   </div>
 
-  <!-- Content Field -->
-  <div class="p-field">
-    <label for="contentInput">Content</label>
+  <div class="flex flex-column gap-2">
+    <label for="contentInput" class="font-medium">Content</label>
     <textarea
-      id="contentInput"
       pTextarea
+      id="contentInput"
       [(ngModel)]="content"
       name="content"
-      required
-      rows="5"
-      placeholder="Enter Post Content"
-      class="p-textarea p-component"
-    ></textarea>
+      rows="6"
+      placeholder="Write your post content here…"
+      class="w-full">
+    </textarea>
   </div>
 
-  <!-- Button Container -->
-  <div class="p-mt-4 p-d-flex p-jc-between p-ai-center">
-    <!-- Add or Update Button -->
-    <button
-      *ngIf="!post"
-      class="p-button p-button-rounded p-button-success"
-      (click)="onAddPost()"
-    >
-      Add Post
-    </button>
-
-    <button
-      *ngIf="post"
-      class="p-button p-button-rounded p-button-primary"
-      (click)="onUpdatePost()"
-    >
-      Update Post
-    </button>
-
-    <!-- Delete Button -->
-    <button
-      *ngIf="post"
-      class="p-button p-button-rounded p-button-danger"
-      (click)="onDeletePost()"
-    >
-      Delete Post
-    </button>
+  <div class="flex justify-content-between gap-2 pt-2">
+    @if (!post) {
+      <p-button
+        label="Publish post"
+        icon="pi pi-check"
+        (onClick)="onAddPost()"
+        [loading]="saving" />
+    }
+    @if (post) {
+      <p-button
+        label="Save changes"
+        icon="pi pi-save"
+        (onClick)="onUpdatePost()"
+        [loading]="saving" />
+      <p-button
+        label="Delete"
+        icon="pi pi-trash"
+        severity="danger"
+        [outlined]="true"
+        (onClick)="onDeletePost()" />
+    }
   </div>
 </div>

@@ -1,66 +1,94 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostService } from '../post.service';
+import { LoginService, UserSession } from '../login.service';
 import { PostFormComponent } from '../post-form/post-form.component';
-import {NgForOf, NgIf} from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
-import {PostDTO} from '../dto/post.dto';
-import {RouterLink} from '@angular/router';
-import {DialogModule} from 'primeng/dialog';
-import {ProgressSpinnerModule} from 'primeng/progressspinner';
-import {BadgeModule} from 'primeng/badge';
+import { ButtonModule } from 'primeng/button';
+import { AvatarModule } from 'primeng/avatar';
+import { DialogModule } from 'primeng/dialog';
+import { SkeletonModule } from 'primeng/skeleton';
+import { PostDTO } from '../dto/post.dto';
 
 @Component({
   selector: 'app-post-list',
   standalone: true,
   imports: [
-    NgForOf,
+    RouterLink,
+    DatePipe,
     CardModule,
     PostFormComponent,
-    NgIf,
-    RouterLink,
     DialogModule,
-    ProgressSpinnerModule,
-    BadgeModule,
+    SkeletonModule,
+    ButtonModule,
+    AvatarModule,
   ],
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.scss']
 })
 export class PostListComponent implements OnInit {
   posts: PostDTO[] = [];
-  loading: boolean = false;
-  showModal: boolean = false;
+  loading = false;
+  showModal = false;
+  session: UserSession | null = null;
+  sessionLoading = true;
 
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private loginService: LoginService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.loginService.getSession().subscribe({
+      next: s => {
+        this.session = s;
+        this.sessionLoading = false;
+        this.route.queryParams.subscribe(params => {
+          if (params['newPost'] === 'true') {
+            this.showModal = true;
+            this.router.navigate([], { queryParams: {}, replaceUrl: true });
+          }
+        });
+      },
+      error: () => {
+        this.session = null;
+        this.sessionLoading = false;
+      }
+    });
+
     this.loadPosts();
   }
 
   loadPosts(): void {
     this.loading = true;
     this.postService.getPosts().subscribe({
-      next: (data) => {
-        this.posts = data.map(post => ({
-          ...post,
-          comments: post.comments || []
-        }));
-      },
-      complete: () => {
+      next: data => {
+        this.posts = data.map(post => ({ ...post, comments: post.comments || [] }));
         this.loading = false;
       },
-      error: (err) => {
-        console.error('Error fetching posts:', err);
+      error: () => {
         this.loading = false;
-      },
+      }
     });
   }
 
   onPostAdded(newPost: PostDTO): void {
-    this.posts.unshift(newPost); // Add new post at the top of the list
+    this.posts.unshift(newPost);
     this.showModal = false;
   }
 
   onModalClose(): void {
-    this.loadPosts(); // Reload posts after modal closes
+    this.loadPosts();
+  }
+
+  get username(): string {
+    return this.session?.username || '';
+  }
+
+  getInitial(title: string): string {
+    return title?.charAt(0).toUpperCase() || 'P';
   }
 }
