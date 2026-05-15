@@ -1,0 +1,70 @@
+@if (session) {
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-3">
+      <a routerLink="/account/security" class="flex align-items-center gap-2 text-primary no-underline">
+        <i class="pi pi-key"></i>
+        <span>Passkeys &amp; Security</span>
+      </a>
+    </div>
+
+    <p-card styleClass="mb-4">
+      <ng-template pTemplate="header">
+        <div class="px-4 pt-4">
+          <h2 class="text-2xl font-semibold m-0">Welcome, {{ session.username }} 👋</h2>
+        </div>
+      </ng-template>
+      <p-tag value="Logged in via Passkey" severity="success" />
+      <p class="mt-2 mb-0 text-color-secondary">
+        Last login: {{ session.lastLogin | date:'medium' }}
+      </p>
+    </p-card>
+
+    @for (passkey of session.passkeys; track passkey.keyId) {
+      <p-card [header]="'Authenticator: ' + passkey.authenticatorAttachment" styleClass="mb-3">
+        <div class="grid mb-2">
+          <div class="col-6"><b>Transports:</b> {{ passkey.transports.join(', ') }}</div>
+          <div class="col-6"><b>Origin:</b> {{ passkey.origin }}</div>
+        </div>
+        <div class="grid mb-3">
+          <div class="col-4">
+            <p-tag [value]="passkey.userPresence ? 'User Presence ✓' : 'User Presence ✗'"
+                   [severity]="passkey.userPresence ? 'success' : 'danger'" />
+          </div>
+          <div class="col-4">
+            <p-tag [value]="passkey.userVerification ? 'Verified ✓' : 'Verified ✗'"
+                   [severity]="passkey.userVerification ? 'success' : 'warn'" />
+          </div>
+          <div class="col-4">
+            <p-tag [value]="passkey.residentKey ? 'Resident Key ✓' : 'Resident Key ✗'"
+                   [severity]="passkey.residentKey ? 'info' : 'secondary'" />
+          </div>
+        </div>
+
+        <p-button
+          label="Toggle debug info"
+          icon="pi pi-code"
+          [outlined]="true"
+          size="small"
+          (onClick)="toggleDebug(passkey)" />
+
+        @if (passkey.showDebug) {
+          <p-table [value]="[passkey]" styleClass="mt-3" [tableStyle]="{'font-size': '0.85rem'}">
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width:140px">Field</th>
+                <th>Value</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row>
+              <tr><td>keyId</td><td class="break-all">{{ row.keyId }}</td></tr>
+              <tr><td>publicKey</td><td class="break-all">{{ row.publicKey }}</td></tr>
+              <tr><td>clientDataJSON</td><td class="break-all">{{ row.clientDataJSON }}</td></tr>
+              <tr><td>attestationObject</td><td class="break-all">{{ row.attestationObject }}</td></tr>
+              <tr><td>signatureCount</td><td>{{ row.signatureCount }}</td></tr>
+            </ng-template>
+          </p-table>
+        }
+      </p-card>
+    }
+  </div>
+}

@@ -1,23 +1,19 @@
-import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
-import {PostDTO} from '../dto/post.dto';
-import {FormsModule} from '@angular/forms';
-import {NgClass, NgIf} from '@angular/common';
-import {Button, ButtonDirective} from 'primeng/button';
-import {PostService} from '../post.service';
-import {ChipsModule} from 'primeng/chips';
-import {SplitButtonModule} from 'primeng/splitbutton';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { PostDTO } from '../dto/post.dto';
+import { FormsModule } from '@angular/forms';
+import { PostService } from '../post.service';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-post-form',
   standalone: true,
   imports: [
     FormsModule,
-    NgIf,
-    ButtonDirective,
-    Button,
-    ChipsModule,
-    NgClass,
-    SplitButtonModule
+    ButtonModule,
+    InputTextModule,
+    TextareaModule,
   ],
   templateUrl: './post-form.component.html',
   styleUrl: './post-form.component.scss'
@@ -28,8 +24,9 @@ export class PostFormComponent implements OnChanges {
   @Output() postDeleted = new EventEmitter<number>();
   @Output() postAdded = new EventEmitter<PostDTO>();
 
-  title: string = '';
-  content: string = '';
+  title = '';
+  content = '';
+  saving = false;
 
   constructor(private postService: PostService) {}
 
@@ -40,55 +37,53 @@ export class PostFormComponent implements OnChanges {
     }
   }
 
-  // Handle Add Post logic
   onAddPost(): void {
     const newPost: PostDTO = { title: this.title, content: this.content, comments: [] };
+    this.saving = true;
     this.postService.createPost(newPost).subscribe({
       next: (createdPost: PostDTO) => {
         this.postAdded.emit(createdPost);
         this.clearForm();
+        this.saving = false;
       },
       error: (err: any) => {
         console.error('Error creating post:', err);
+        this.saving = false;
       }
     });
   }
 
-  // Handle Update Post logic
   onUpdatePost(): void {
-    if (this.post && this.post.id) {
+    if (this.post?.id) {
       const updatedPost: PostDTO = { ...this.post, title: this.title, content: this.content };
+      this.saving = true;
       this.postService.updatePost(updatedPost).subscribe({
         next: (updated: PostDTO) => {
           this.postUpdated.emit(updated);
           this.clearForm();
+          this.saving = false;
         },
         error: (err: any) => {
           console.error('Error updating post:', err);
+          this.saving = false;
         }
       });
-    } else {
-      console.error('Post ID is undefined. Cannot update post.');
     }
   }
 
-  // Handle Delete Post logic
   onDeletePost(): void {
-    if (this.post && this.post.id !== undefined) {
+    if (this.post?.id !== undefined) {
       const postId = this.post.id;
       this.postService.deletePost(postId).subscribe({
         next: () => {
           this.postDeleted.emit(postId);
           this.clearForm();
         },
-        error: (err: any) => {
-          console.error('Error deleting post:', err);
-        }
+        error: (err: any) => console.error('Error deleting post:', err)
       });
     }
   }
 
-  // Clear the form fields after a post is created or updated
   private clearForm(): void {
     this.title = '';
     this.content = '';

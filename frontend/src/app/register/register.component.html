@@ -1,0 +1,40 @@
+<p-toast />
+
+<div class="flex align-items-center justify-content-center surface-ground" style="min-height: 100vh;">
+  <div class="w-full px-3" style="max-width: 440px;">
+    <p-card styleClass="shadow-4 border-round-xl">
+      <div class="flex flex-column gap-4 p-2">
+
+        <div class="text-center">
+          <h2 class="text-3xl font-bold m-0">Create account</h2>
+          <p class="text-color-secondary mt-2 mb-0">Register with a passkey — secure and passwordless</p>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <label for="username" class="font-medium">Username</label>
+          <input
+            pInputText
+            id="username"
+            [(ngModel)]="username"
+            placeholder="Choose a username"
+            class="w-full"
+            (keyup.enter)="onSubmit()" />
+        </div>
+
+        <p-button
+          label="Create account & register passkey"
+          icon="pi pi-key"
+          styleClass="w-full"
+          size="large"
+          (onClick)="onSubmit()"
+          [loading]="loading" />
+
+        <div class="text-center">
+          <span class="text-color-secondary">Already have an account? </span>
+          <a routerLink="/login" class="text-primary font-medium no-underline cursor-pointer">Sign in</a>
+        </div>
+
+      </div>
+    </p-card>
+  </div>
+</div>

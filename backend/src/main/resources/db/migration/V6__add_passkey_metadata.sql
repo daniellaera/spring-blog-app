@@ -1,0 +1,6 @@
+ALTER TABLE passkey
+    ADD COLUMN created_at     TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    ADD COLUMN last_used_at   TIMESTAMP WITH TIME ZONE,
+    ADD COLUMN device_name    VARCHAR(255),
+    ADD COLUMN aaguid         VARCHAR(36),
+    ADD COLUMN backed_up      BOOLEAN NOT NULL DEFAULT FALSE;

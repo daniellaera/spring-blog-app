@@ -1,0 +1,110 @@
+.passkeys-section {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.passkey-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.passkey-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  background: #fff;
+}
+
+.passkey-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.passkey-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.passkey-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.name-input {
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #a0aec0;
+  border-radius: 4px;
+}
+
+.passkey-meta {
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.badge-synced {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #c6f6d5;
+  color: #276749;
+  font-weight: 500;
+}
+
+.passkey-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+
+  button {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    background: #f7fafc;
+
+    &.danger {
+      color: #e53e3e;
+      border-color: #e53e3e;
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+
+    &:hover:not(:disabled) {
+      background: #edf2f7;
+    }
+  }
+}
+
+.btn-primary {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #3182ce;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+
+  &:hover {
+    background: #2b6cb0;
+  }
+}
+
+.error {
+  color: #e53e3e;
+  margin-bottom: 1rem;
+}

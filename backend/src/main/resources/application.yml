@@ -10,3 +10,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  threads:
+    virtual:
+      enabled: true
+
+webauthn:
+  rp-id: ${WEBAUTHN_RP_ID:localhost}
+  origin: ${WEBAUTHN_ORIGIN:http://localhost:4200}

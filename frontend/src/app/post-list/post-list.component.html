@@ -1,65 +1,130 @@
-<!-- Loading Section -->
-<div *ngIf="loading" class="loading-container">
-  <h2 class="text-primary">Loading data from the server, please wait...</h2>
-  <p-progressSpinner></p-progressSpinner>
-</div>
+<!-- Hero section -->
+@if (!sessionLoading) {
+  <div
+    class="flex align-items-center justify-content-center text-center surface-900"
+    style="min-height: 40vh;">
+    <div class="page-container w-full py-6 px-4">
 
-<!-- Post List Section -->
-<div *ngIf="!loading" class="post-list">
-  <h2 class="p-text-center">Posts</h2>
+      @if (!session) {
+        <h1 class="text-5xl font-bold text-white m-0 mb-3">MyBlog</h1>
+        <p class="text-xl text-300 mb-5 mt-0">
+          A passkey-powered blog — secure, passwordless, and modern.
+        </p>
+        <div class="flex justify-content-center gap-3 flex-wrap">
+          <p-button
+            label="Sign in with Passkey"
+            icon="pi pi-key"
+            size="large"
+            routerLink="/login" />
+          <p-button
+            label="Create account"
+            icon="pi pi-user-plus"
+            size="large"
+            [outlined]="true"
+            styleClass="text-white border-white"
+            routerLink="/register" />
+        </div>
+      } @else {
+        <h1 class="text-4xl font-bold text-white m-0 mb-3">Welcome back, {{ username }}</h1>
+        <p class="text-xl text-300 mb-5 mt-0">Here's what's been posted lately.</p>
+        <div class="flex justify-content-center gap-3 flex-wrap">
+          <p-button
+            label="New post"
+            icon="pi pi-pencil"
+            size="large"
+            (onClick)="showModal = true" />
+          <p-button
+            label="My passkeys"
+            icon="pi pi-key"
+            size="large"
+            [outlined]="true"
+            styleClass="text-white border-white"
+            routerLink="/account/security" />
+        </div>
+      }
 
-  <!-- Add New Post Button -->
-  <div class="p-text-center p-mb-4">
-    <button
-      class="p-button p-button-rounded p-button-primary"
-      (click)="showModal = true"
-    >
-      <i class="pi pi-plus-circle p-mr-2"></i> Add New Post
-    </button>
-  </div>
-
-  <!-- Posts Grid -->
-  <div class="p-grid p-justify-center">
-    <div class="p-col-12 p-md-6 p-lg-4 p-d-flex p-jc-center" *ngFor="let post of posts">
-      <p-card
-        header="{{ post.title }}"
-        class="post-card p-mb-3"
-      >
-        <p>{{ post.content }}</p>
-        <ng-template pTemplate="footer">
-          <div class="p-d-flex p-jc-between p-ai-center">
-            <!-- View Details Button -->
-            <button
-              class="p-button p-button-text p-button-primary"
-              [routerLink]="['/post', post.id]"
-            >
-              <i class="pi pi-eye p-mr-2"></i> View Details
-            </button>
-
-            <!-- Comments Count -->
-            <div
-              *ngIf="post.comments && post.comments.length > 0"
-              class="p-d-flex p-ai-center"
-            >
-              <i class="pi pi-comments p-mr-1"></i>
-              <p-badge [value]="post.comments.length" class="p-badge-primary"></p-badge>
-            </div>
-          </div>
-        </ng-template>
-      </p-card>
     </div>
   </div>
+}
 
-  <!-- Add Post Dialog -->
-  <p-dialog
-    header="Add New Post"
-    [(visible)]="showModal"
-    [style]="{ width: '50vw' }"
-    [modal]="true"
-    [closable]="true"
-    [draggable]="false"
-    (onHide)="onModalClose()"
-  >
-    <app-post-form (postAdded)="onPostAdded($event)"></app-post-form>
-  </p-dialog>
+<!-- Posts section -->
+<div class="page-container py-5">
+
+  <h2 class="text-2xl font-semibold mb-4 m-0">Latest posts</h2>
+
+  @if (loading) {
+    <div class="grid">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="col-12 md:col-6 lg:col-4 p-2">
+          <p-skeleton height="220px" styleClass="border-round" />
+        </div>
+      }
+    </div>
+  }
+
+  @if (!loading) {
+    @if (posts.length === 0) {
+      <div class="text-center py-8">
+        <i class="pi pi-inbox text-5xl text-color-secondary mb-3 block"></i>
+        <p class="text-color-secondary text-xl">No posts yet.</p>
+        @if (session) {
+          <p-button
+            label="Write the first post"
+            icon="pi pi-pencil"
+            styleClass="mt-3"
+            (onClick)="showModal = true" />
+        }
+      </div>
+    } @else {
+      <div class="grid">
+        @for (post of posts; track post.id) {
+          <div class="col-12 md:col-6 lg:col-4 p-2">
+            <p-card styleClass="h-full shadow-2 border-round">
+              <ng-template pTemplate="header">
+                <div class="px-4 pt-4">
+                  <h3 class="text-lg font-bold m-0 line-height-3">{{ post.title }}</h3>
+                </div>
+              </ng-template>
+
+              <p class="text-color-secondary line-clamp-3 m-0">{{ post.content }}</p>
+
+              <ng-template pTemplate="footer">
+                <div class="flex align-items-center justify-content-between gap-2">
+                  <div class="flex align-items-center gap-2">
+                    <p-avatar
+                      [label]="getInitial(post.title)"
+                      shape="circle"
+                      styleClass="bg-primary text-white text-sm" />
+                    <span class="text-sm text-color-secondary">
+                      {{ post.createdAt | date:'mediumDate' }}
+                    </span>
+                  </div>
+                  <p-button
+                    label="Read"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    [text]="true"
+                    size="small"
+                    [routerLink]="['/post', post.id]" />
+                </div>
+              </ng-template>
+            </p-card>
+          </div>
+        }
+      </div>
+    }
+  }
+
 </div>
+
+<!-- Add Post Dialog -->
+<p-dialog
+  header="New Post"
+  [(visible)]="showModal"
+  [style]="{ width: '50vw', minWidth: '320px' }"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  (onHide)="onModalClose()">
+  <app-post-form (postAdded)="onPostAdded($event)" />
+</p-dialog>
