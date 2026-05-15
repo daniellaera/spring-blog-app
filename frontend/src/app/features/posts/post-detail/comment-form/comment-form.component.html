@@ -1,0 +1,56 @@
+<p-toast />
+
+<div class="flex flex-column gap-3">
+  @for (comment of comments; track $index) {
+    <div class="surface-50 border-round-lg p-3"
+         style="border:1px solid var(--surface-border)">
+      <div class="flex align-items-center gap-2 mb-2">
+        <p-avatar
+          [label]="comment.author?.charAt(0)?.toUpperCase() ?? 'A'"
+          shape="circle"
+          styleClass="bg-primary text-white text-xs font-bold" />
+        <span class="font-semibold text-sm">
+          {{ comment.author ?? 'Anonymous' }}
+        </span>
+        <span class="text-xs text-color-secondary ml-auto">
+          {{ comment.createdAt | date:'MMM d, y' }}
+        </span>
+      </div>
+      <p class="m-0 text-sm line-height-3">{{ comment.text }}</p>
+    </div>
+  }
+
+  @if (comments.length === 0) {
+    <p class="text-color-secondary text-sm text-center py-3">
+      No comments yet. Be the first!
+    </p>
+  }
+</div>
+
+<!-- submit form — only if logged in -->
+@if (isLoggedIn()) {
+  <div class="flex flex-column gap-2 mt-4">
+    <textarea
+      pTextarea
+      [(ngModel)]="newComment"
+      placeholder="Write a comment..."
+      [rows]="3"
+      [autoResize]="true"
+      class="w-full">
+    </textarea>
+    <div class="flex justify-content-end">
+      <p-button
+        label="Post comment"
+        icon="pi pi-send"
+        size="small"
+        [loading]="submitting"
+        [disabled]="!newComment.trim()"
+        (onClick)="submitComment()" />
+    </div>
+  </div>
+} @else {
+  <p class="text-color-secondary text-sm text-center mt-3">
+    <a routerLink="/login" class="text-primary">Sign in</a>
+    to leave a comment
+  </p>
+}

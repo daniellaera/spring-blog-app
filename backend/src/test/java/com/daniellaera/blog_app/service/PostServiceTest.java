@@ -63,7 +63,7 @@ class PostServiceTest {
 
         given(postRepository.save(any(Post.class))).willReturn(post);
 
-        PostDTO saved = postService.createPost(postDTO);
+        PostDTO saved = postService.createPost(postDTO, "Eddy");
 
         assertNotNull(saved, "Saved post should not be null");
         assertEquals(saved.title(), postDTO.title(), "Title should be the same");

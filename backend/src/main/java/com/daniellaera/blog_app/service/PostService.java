@@ -13,7 +13,7 @@ public interface PostService {
 
     Optional<PostDTO> getPostById(Long id);
 
-    PostDTO createPost(PostDTO postDTO);
+    PostDTO createPost(PostDTO postDTO, String author);
 
     void deleteById(Long id);
 

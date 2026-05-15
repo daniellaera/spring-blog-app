@@ -1,0 +1,108 @@
+<div class="min-h-screen surface-ground flex align-items-center
+            justify-content-center px-3 py-6">
+  <div style="width:100%; max-width:440px">
+
+    <div class="text-center mb-5">
+      <i class="pi pi-user-plus text-primary" style="font-size:3rem"></i>
+      <h1 class="text-3xl font-bold mt-3 mb-1">Create account</h1>
+      <p class="text-color-secondary m-0">
+        Join us — your account is secured with a passkey
+      </p>
+    </div>
+
+    <div class="surface-card border-round-xl shadow-4 p-5">
+
+      @if (step === 1) {
+        <div class="flex flex-column gap-4">
+
+          <div class="flex align-items-center gap-2 mb-2">
+            <span class="flex align-items-center justify-content-center
+                         bg-primary text-white border-circle font-bold"
+                  style="width:1.75rem; height:1.75rem; font-size:.85rem">1</span>
+            <span class="text-sm font-medium">Your details</span>
+            <div class="flex-1 mx-2" style="height:1px; background:var(--surface-border)"></div>
+            <span class="flex align-items-center justify-content-center
+                         border-circle border-1 border-surface-border text-color-secondary"
+                  style="width:1.75rem; height:1.75rem; font-size:.85rem">2</span>
+            <span class="text-sm text-color-secondary">Passkey</span>
+          </div>
+
+          <div class="flex flex-column gap-2">
+            <label class="font-medium text-sm">Username</label>
+            <input
+              pInputText
+              [(ngModel)]="username"
+              placeholder="Choose a username"
+              class="w-full"
+              [class.ng-invalid]="usernameError"
+              [class.ng-dirty]="usernameError" />
+            @if (usernameError) {
+              <small class="text-red-500">{{ usernameError }}</small>
+            }
+          </div>
+
+          <p-button
+            label="Continue"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            styleClass="w-full"
+            size="large"
+            [loading]="loading"
+            (onClick)="createAccount()" />
+        </div>
+      }
+
+      @if (step === 2) {
+        <div class="flex flex-column gap-4">
+
+          <div class="flex align-items-center gap-2 mb-2">
+            <span class="flex align-items-center justify-content-center
+                         bg-green-500 text-white border-circle"
+                  style="width:1.75rem; height:1.75rem">
+              <i class="pi pi-check text-xs"></i>
+            </span>
+            <span class="text-sm text-color-secondary">Your details</span>
+            <div class="flex-1" style="height:1px; background:var(--surface-border)"></div>
+            <span class="flex align-items-center justify-content-center
+                         bg-primary text-white border-circle font-bold"
+                  style="width:1.75rem; height:1.75rem; font-size:.85rem">2</span>
+            <span class="text-sm font-medium">Passkey</span>
+          </div>
+
+          <div class="text-center py-3">
+            <i class="pi pi-key text-primary mb-3 block" style="font-size:3rem"></i>
+            <h3 class="text-xl font-bold mt-0 mb-2">Register your passkey</h3>
+            <p class="text-color-secondary text-sm m-0">
+              Your device will ask you to use Face ID, Touch ID, or your PIN.
+              This replaces a password — it's faster and more secure.
+            </p>
+          </div>
+
+          <p-button
+            label="Register passkey"
+            icon="pi pi-key"
+            styleClass="w-full"
+            size="large"
+            [loading]="loading"
+            (onClick)="registerPasskey()" />
+
+          <p class="text-center text-xs text-color-secondary m-0">
+            <i class="pi pi-info-circle mr-1"></i>
+            Your passkey is stored on your device and never leaves it
+          </p>
+        </div>
+      }
+
+    </div>
+
+    <div class="text-center mt-4">
+      <span class="text-color-secondary">Already have an account? </span>
+      <a routerLink="/login"
+         class="text-primary font-semibold no-underline hover:underline">
+        Sign in
+      </a>
+    </div>
+  </div>
+</div>
+
+<p-toast />

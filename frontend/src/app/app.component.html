@@ -1,34 +1,42 @@
 <p-toast />
-<div class="sticky top-0 z-5 surface-card border-bottom-1 surface-border">
-  <p-toolbar styleClass="border-noround px-4 py-2">
-    <ng-template pTemplate="start">
-      <a routerLink="/" class="text-xl font-bold text-primary no-underline cursor-pointer">
-        MyBlog
-      </a>
-    </ng-template>
-    <ng-template pTemplate="end">
-      @if (!session) {
-        <div class="flex gap-2">
-          <p-button label="Sign in" routerLink="/login" [text]="true" />
-          <p-button label="Register" routerLink="/register" />
-        </div>
-      } @else {
-        <div class="flex align-items-center gap-2">
-          <p-button
-            icon="pi pi-pencil"
-            label="New post"
-            routerLink="/"
-            [queryParams]="{ newPost: true }" />
-          <p-avatar
-            [label]="userInitial"
-            shape="circle"
-            styleClass="cursor-pointer"
-            (click)="userMenu.toggle($event)" />
-          <p-menu #userMenu [popup]="true" [model]="userMenuItems" />
-        </div>
-      }
-    </ng-template>
-  </p-toolbar>
-</div>
+<p-toolbar styleClass="border-none shadow-2 px-4 sticky top-0 z-5 surface-card">
+  <ng-template pTemplate="start">
+    <a routerLink="/" class="flex align-items-center gap-2 no-underline">
+      <i class="pi pi-shield text-primary text-2xl"></i>
+      <span class="text-xl font-bold text-color">AppName</span>
+    </a>
+  </ng-template>
+
+  <ng-template pTemplate="end">
+    @if (isLoggedIn()) {
+      <div class="flex align-items-center gap-2">
+        <p-button
+          label="New Post"
+          icon="pi pi-plus"
+          size="small"
+          routerLink="/posts/new" />
+        <p-avatar
+          [label]="userInitial()"
+          shape="circle"
+          size="normal"
+          styleClass="cursor-pointer bg-primary text-white font-bold"
+          (click)="userMenu.toggle($event)" />
+        <p-menu #userMenu [popup]="true" [model]="menuItems()" />
+      </div>
+    } @else {
+      <div class="flex gap-2">
+        <p-button
+          label="Sign in"
+          icon="pi pi-sign-in"
+          [text]="true"
+          routerLink="/login" />
+        <p-button
+          label="Get started"
+          icon="pi pi-user-plus"
+          routerLink="/register" />
+      </div>
+    }
+  </ng-template>
+</p-toolbar>
 
 <router-outlet />

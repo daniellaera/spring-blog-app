@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -13,14 +14,14 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { PasskeyDto } from './passkey.dto';
 import { PasskeyService } from './passkey.service';
-import { RelativeTimePipe } from '../../pipes/relative-time.pipe';
+import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
 
 @Component({
   selector: 'app-passkey-list',
   standalone: true,
   imports: [
     CommonModule, FormsModule, DatePipe,
-    TableModule, ButtonModule, TagModule, ToastModule,
+    TableModule, ButtonModule, CardModule, TagModule, ToastModule,
     ConfirmDialogModule, DialogModule, InputTextModule,
     SkeletonModule, TooltipModule,
     RelativeTimePipe

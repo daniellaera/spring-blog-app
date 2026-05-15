@@ -27,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO addComment(Long postId, CommentDTO commentDTO) {
+    public CommentDTO addComment(Long postId, CommentDTO commentDTO, String author) {
         Optional<Post> post = postRepository.findById(postId);
         if (post.isEmpty()) {
             throw new EntityNotFoundException("Post not found");
@@ -36,6 +36,7 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = convertToEntity(commentDTO);
         comment.setPost(postEntity);
+        comment.setAuthor(author);
 
         Comment saved = commentRepository.save(comment);
         return convertToDto(saved);
@@ -76,6 +77,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private CommentDTO convertToDto(Comment comment) {
-        return new CommentDTO(comment.getText());
+        String createdAt = comment.getCreatedAt() != null ? comment.getCreatedAt().toString() : null;
+        return new CommentDTO(comment.getText(), comment.getAuthor(), createdAt);
     }
 }

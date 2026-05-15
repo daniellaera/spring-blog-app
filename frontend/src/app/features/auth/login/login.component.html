@@ -1,0 +1,50 @@
+<div class="min-h-screen surface-ground flex align-items-center
+            justify-content-center px-3 py-6">
+  <div style="width:100%; max-width:420px">
+
+    <div class="text-center mb-5">
+      <i class="pi pi-shield text-primary" style="font-size:3rem"></i>
+      <h1 class="text-3xl font-bold mt-3 mb-1">Welcome back</h1>
+      <p class="text-color-secondary m-0">Sign in with your passkey — no password needed</p>
+    </div>
+
+    <div class="surface-card border-round-xl shadow-4 p-5">
+      <div class="flex flex-column gap-2 mb-4">
+        <label class="font-medium text-sm">Username</label>
+        <input
+          pInputText
+          [(ngModel)]="username"
+          placeholder="Enter your username"
+          class="w-full"
+          [class.ng-invalid]="usernameError"
+          [class.ng-dirty]="usernameError" />
+        @if (usernameError) {
+          <small class="text-red-500">{{ usernameError }}</small>
+        }
+      </div>
+
+      <p-button
+        label="Sign in with Passkey"
+        icon="pi pi-key"
+        styleClass="w-full mb-2"
+        size="large"
+        [loading]="loading"
+        (onClick)="signInWithPasskey()" />
+
+      <p class="text-center text-xs text-color-secondary mt-2 mb-0">
+        <i class="pi pi-lock mr-1"></i>
+        Uses Face ID, Touch ID, or your device PIN
+      </p>
+    </div>
+
+    <div class="text-center mt-4">
+      <span class="text-color-secondary">No account? </span>
+      <a routerLink="/register"
+         class="text-primary font-semibold no-underline hover:underline">
+        Create one free
+      </a>
+    </div>
+  </div>
+</div>
+
+<p-toast />

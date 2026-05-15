@@ -10,14 +10,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,22 +45,23 @@ class CommentControllerTest {
 
     @Test
     void createComment() throws Exception {
-        CommentDTO commentDTO = new CommentDTO("This is a comment");
+        CommentDTO commentDTO = new CommentDTO("This is a comment", null, null);
 
-        given(commentService.addComment(anyLong(), any(CommentDTO.class))).willReturn(commentDTO);
+        given(commentService.addComment(anyLong(), any(CommentDTO.class), anyString())).willReturn(commentDTO);
         String reqBody = new ObjectMapper().writeValueAsString(commentDTO);
 
         mockMvc.perform(post("/api/v3/comment/{postId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(reqBody))
+                        .content(reqBody)
+                        .principal(new UsernamePasswordAuthenticationToken("testuser", null, Collections.emptyList())))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(reqBody));
     }
 
     @Test
     void getCommentsByPost() throws Exception {
-        CommentDTO comment1 = new CommentDTO("Comment 1");
-        CommentDTO comment2 = new CommentDTO("Comment 2");
+        CommentDTO comment1 = new CommentDTO("Comment 1", null, null);
+        CommentDTO comment2 = new CommentDTO("Comment 2", null, null);
 
         List<CommentDTO> comments = Arrays.asList(comment1, comment2);
         given(commentService.getAllCommentsByPostId(anyLong())).willReturn(comments);
@@ -84,7 +88,7 @@ class CommentControllerTest {
 
     @Test
     void updateComment() throws Exception {
-        CommentDTO updatedCommentDTO = new CommentDTO("Updated comment");
+        CommentDTO updatedCommentDTO = new CommentDTO("Updated comment", null, null);
 
         given(commentService.updateComment(anyLong(), any(CommentDTO.class))).willReturn(updatedCommentDTO);
         String reqBody = new ObjectMapper().writeValueAsString(updatedCommentDTO);

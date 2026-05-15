@@ -24,14 +24,14 @@
   }
 
   @if (!loading && passkeys.length === 0) {
-    <div class="surface-card border-round shadow-2 text-center py-6 px-4">
+    <p-card styleClass="text-center">
       <i class="pi pi-key text-5xl text-color-secondary mb-3 block"></i>
       <p class="text-color-secondary mb-3">No passkeys registered yet.</p>
       <p-button
         label="Add your first passkey"
         icon="pi pi-plus"
         (onClick)="registerNewPasskey()" />
-    </div>
+    </p-card>
   }
 
   @if (!loading && passkeys.length > 0) {

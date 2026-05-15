@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -36,8 +37,8 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO post) {
-        PostDTO createdPost = postService.createPost(post);
+    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO post, Principal principal) {
+        PostDTO createdPost = postService.createPost(post, principal.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 

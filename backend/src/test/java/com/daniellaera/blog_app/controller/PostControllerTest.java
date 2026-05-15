@@ -11,15 +11,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -67,11 +69,11 @@ class PostControllerTest {
 
     @Test
     void getPostsWithComments() throws Exception {
-        CommentDTO comment1 = new CommentDTO("First comment");
-        CommentDTO comment2 = new CommentDTO("Second comment");
+        CommentDTO comment1 = new CommentDTO("First comment", null, null);
+        CommentDTO comment2 = new CommentDTO("Second comment", null, null);
 
-        PostDTO post1 = new PostDTO(1L, "title", "content","Jean marc", List.of(comment1, comment2));
-        PostDTO post2 = new PostDTO(2L, "title2", "content2","Christophe", List.of(new CommentDTO("Another comment")));
+        PostDTO post1 = new PostDTO(1L, "title", "content", "Jean marc", List.of(comment1, comment2));
+        PostDTO post2 = new PostDTO(2L, "title2", "content2", "Christophe", List.of(new CommentDTO("Another comment", null, null)));
 
         List<PostDTO> posts = Arrays.asList(post1, post2);
         given(postService.getAllPosts()).willReturn(posts);
@@ -99,7 +101,7 @@ class PostControllerTest {
 
     @Test
     void getPostById() throws Exception {
-        PostDTO post = new PostDTO(1L, "title", "content","Rubert", List.of());
+        PostDTO post = new PostDTO(1L, "title", "content", "Rubert", List.of());
 
         given(postService.getPostById(any(Long.class))).willReturn(Optional.of(post));
         mockMvc.perform(get("/api/v3/post/" + 1)
@@ -125,21 +127,21 @@ class PostControllerTest {
     void createPost() throws Exception {
         PostDTO post = new PostDTO(1L, "title", "content", "Lucas", List.of());
 
-        given(postService.createPost(refEq(post))).willReturn(post);
+        given(postService.createPost(any(PostDTO.class), anyString())).willReturn(post);
         String reqBody = new ObjectMapper().writeValueAsString(post);
 
         mockMvc.perform(post("/api/v3/post")
                         .contentType(MediaType.APPLICATION_JSON)
-                .content(reqBody))
+                        .content(reqBody)
+                        .principal(new UsernamePasswordAuthenticationToken("Lucas", null, Collections.emptyList())))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(reqBody));
-
     }
 
     @Test
     void deletePost() throws Exception {
         willDoNothing().given(postService).deleteById(any(Long.class));
-        mockMvc.perform(delete("/api/v3/post/{id}", + 1L)
+        mockMvc.perform(delete("/api/v3/post/{id}", +1L)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 

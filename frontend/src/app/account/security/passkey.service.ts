@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, firstValueFrom } from 'rxjs';
 import { PasskeyDto } from './passkey.dto';
-import { LoginService } from '../../login.service';
-import { RegisterService } from '../../register.service';
+import { LoginService } from '../../core/services/login.service';
+import { RegisterService } from '../../core/services/register.service';
 import { startRegistration } from '@simplewebauthn/browser';
 
 @Injectable({ providedIn: 'root' })

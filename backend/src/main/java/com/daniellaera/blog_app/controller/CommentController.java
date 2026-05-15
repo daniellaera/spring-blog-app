@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -32,8 +33,10 @@ public class CommentController {
 
 
     @PostMapping("/{postId}")
-    public ResponseEntity<CommentDTO> createComment(@PathVariable Long postId, @RequestBody CommentDTO commentDTO) {
-        CommentDTO comment = commentService.addComment(postId, commentDTO);
+    public ResponseEntity<CommentDTO> createComment(@PathVariable Long postId,
+                                                    @RequestBody CommentDTO commentDTO,
+                                                    Principal principal) {
+        CommentDTO comment = commentService.addComment(postId, commentDTO, principal.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
 

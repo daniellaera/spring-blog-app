@@ -68,7 +68,7 @@ public class CommentServiceTest {
 
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
-        CommentDTO saved = commentService.addComment(anyLong(), commentDTO);
+        CommentDTO saved = commentService.addComment(anyLong(), commentDTO, "testUser");
 
         assertNotNull(saved);
 
@@ -88,7 +88,7 @@ public class CommentServiceTest {
         // Act & Assert
         EntityNotFoundException exception = assertThrows(
                 EntityNotFoundException.class,
-                () -> commentService.addComment(anyLong(), commentDTO)
+                () -> commentService.addComment(anyLong(), commentDTO, "testUser")
         );
 
         // Verify the exception message
@@ -100,7 +100,7 @@ public class CommentServiceTest {
 
 
     private CommentDTO convertToDTO(Comment comment) {
-        return new CommentDTO(comment.getText());
+        return new CommentDTO(comment.getText(), null, null);
     }
 
 }

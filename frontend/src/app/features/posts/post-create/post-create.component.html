@@ -1,0 +1,69 @@
+<div class="surface-ground min-h-screen py-5 px-3">
+  <div style="max-width:780px; margin:0 auto">
+
+    <div class="flex align-items-center justify-content-between mb-4">
+      <div>
+        <h1 class="text-3xl font-bold m-0">Write a post</h1>
+        <p class="text-color-secondary mt-1 mb-0">
+          Share your thoughts with the community
+        </p>
+      </div>
+      <p-button
+        label="Back"
+        icon="pi pi-arrow-left"
+        [text]="true"
+        routerLink="/" />
+    </div>
+
+    <div class="surface-card border-round-xl shadow-2 p-5">
+      <div class="flex flex-column gap-4">
+
+        <div class="flex flex-column gap-2">
+          <label class="font-semibold text-sm">Title</label>
+          <input
+            pInputText
+            [(ngModel)]="title"
+            placeholder="Give your post a compelling title..."
+            class="w-full"
+            style="font-size:1.25rem; padding:.875rem 1rem" />
+          @if (titleError) {
+            <small class="text-red-500">{{ titleError }}</small>
+          }
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <label class="font-semibold text-sm">Content</label>
+          <textarea
+            pInputTextarea
+            [(ngModel)]="content"
+            placeholder="Write your post here..."
+            [rows]="14"
+            [autoResize]="true"
+            class="w-full"
+            style="line-height:1.8; font-size:1rem">
+          </textarea>
+          @if (contentError) {
+            <small class="text-red-500">{{ contentError }}</small>
+          }
+        </div>
+
+        <div class="flex justify-content-end gap-2 pt-2"
+             style="border-top:1px solid var(--surface-border)">
+          <p-button
+            label="Cancel"
+            [text]="true"
+            routerLink="/" />
+          <p-button
+            label="Publish post"
+            icon="pi pi-send"
+            [loading]="loading"
+            (onClick)="submit()" />
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p-toast />

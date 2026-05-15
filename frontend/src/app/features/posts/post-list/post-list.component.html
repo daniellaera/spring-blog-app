@@ -1,0 +1,122 @@
+<!-- HERO -->
+<div class="surface-900 text-white py-8 px-4 text-center"
+     style="min-height:45vh; display:flex; flex-direction:column;
+            align-items:center; justify-content:center; gap:1.5rem">
+  <div class="text-primary text-sm font-semibold uppercase tracking-widest">
+    Passwordless &amp; Secure
+  </div>
+  <h1 class="text-5xl font-bold m-0 line-height-2">
+    Your thoughts,<br><span class="text-primary">beautifully shared</span>
+  </h1>
+  <p class="text-400 text-xl m-0" style="max-width:520px">
+    A modern blogging platform secured with passkeys.
+    No passwords. No friction. Just you and your ideas.
+  </p>
+
+  @if (!isLoggedIn()) {
+    <div class="flex gap-3 flex-wrap justify-content-center mt-2">
+      <p-button
+        label="Sign in with Passkey"
+        icon="pi pi-key"
+        size="large"
+        routerLink="/login" />
+      <p-button
+        label="Create account"
+        icon="pi pi-user-plus"
+        size="large"
+        [outlined]="true"
+        styleClass="text-white border-white"
+        routerLink="/register" />
+    </div>
+  } @else {
+    <div class="flex gap-3 flex-wrap justify-content-center mt-2">
+      <p-button
+        label="Write a post"
+        icon="pi pi-pencil"
+        size="large"
+        routerLink="/posts/new" />
+      <p-button
+        label="Manage passkeys"
+        icon="pi pi-key"
+        size="large"
+        [outlined]="true"
+        styleClass="text-white border-white"
+        routerLink="/account/security" />
+    </div>
+  }
+</div>
+
+<!-- POSTS SECTION -->
+<div class="px-4 py-6" style="max-width:1200px; margin:0 auto">
+  <div class="flex align-items-center justify-content-between mb-5">
+    <div>
+      <h2 class="text-3xl font-bold m-0">Latest posts</h2>
+      <p class="text-color-secondary mt-1 mb-0">Fresh ideas from the community</p>
+    </div>
+    @if (isLoggedIn()) {
+      <p-button label="Write" icon="pi pi-pencil" [outlined]="true" routerLink="/posts/new" />
+    }
+  </div>
+
+  @if (loading) {
+    <div class="grid">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="col-12 md:col-6 lg:col-4 p-3">
+          <div class="surface-card border-round-xl p-4 shadow-1">
+            <p-skeleton height="1.5rem" styleClass="mb-3" />
+            <p-skeleton height="1rem" styleClass="mb-2" />
+            <p-skeleton height="1rem" width="80%" styleClass="mb-4" />
+            <div class="flex justify-content-between align-items-center">
+              <p-skeleton shape="circle" size="2rem" />
+              <p-skeleton height="1rem" width="5rem" />
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (!loading && posts.length === 0) {
+    <div class="text-center py-8">
+      <i class="pi pi-inbox text-6xl text-color-secondary mb-4 block"></i>
+      <h3 class="text-xl font-semibold">No posts yet</h3>
+      <p class="text-color-secondary mb-4">Be the first to share something.</p>
+      <p-button label="Write the first post" icon="pi pi-pencil" routerLink="/posts/new" />
+    </div>
+  }
+
+  <div class="grid">
+    @for (post of posts; track post.id) {
+      <div class="col-12 md:col-6 lg:col-4 p-3">
+        <div class="h-full cursor-pointer" [routerLink]="['/posts', post.id]">
+          <p-card styleClass="h-full transition-all transition-duration-200 hover:shadow-4">
+            <div class="flex-1">
+              <h3 class="text-xl font-bold mt-0 mb-2 line-height-2">{{ post.title }}</h3>
+              <p class="text-color-secondary mt-0 mb-4"
+                 style="display:-webkit-box; -webkit-line-clamp:3;
+                        -webkit-box-orient:vertical; overflow:hidden">
+                {{ post.content }}
+              </p>
+            </div>
+            <div class="flex align-items-center justify-content-between pt-3"
+                 style="border-top: 1px solid var(--surface-border)">
+              <div class="flex align-items-center gap-2">
+                <p-avatar
+                  [label]="post.author?.charAt(0)?.toUpperCase() || '?'"
+                  shape="circle"
+                  size="normal"
+                  styleClass="bg-primary text-white text-sm font-bold" />
+                <span class="text-sm font-medium">{{ post.author }}</span>
+              </div>
+              <p-button
+                icon="pi pi-arrow-right"
+                [rounded]="true"
+                [text]="true"
+                size="small" />
+            </div>
+          </p-card>
+        </div>
+      </div>
+    }
+  </div>
+</div>

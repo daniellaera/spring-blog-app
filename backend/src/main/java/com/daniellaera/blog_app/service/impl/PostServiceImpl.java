@@ -37,8 +37,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO createPost(PostDTO postDTO) {
+    public PostDTO createPost(PostDTO postDTO, String author) {
         Post post = convertToEntity(postDTO);
+        post.setAuthor(author);
         Post saved = postRepository.save(post);
         return convertToDTO(saved);
     }
@@ -81,7 +82,8 @@ public class PostServiceImpl implements PostService {
     }
 
     private CommentDTO convertCommentToCommentDto(Comment comment) {
-        return new CommentDTO(comment.getText());
+        String createdAt = comment.getCreatedAt() != null ? comment.getCreatedAt().toString() : null;
+        return new CommentDTO(comment.getText(), comment.getAuthor(), createdAt);
     }
 
     private Comment convertCommentDtoToCommentEntity(CommentDTO commentDTO) {
