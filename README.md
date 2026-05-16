@@ -25,19 +25,20 @@
 - Passwordless authentication via WebAuthn/Passkeys (Face ID, Touch ID, device PIN)
 - Passkey management — register, rename, delete credentials
 - Passkey desync handling — graceful errors when credential missing from device or DB
+- Account recovery via email OTP — regain access when passkey is lost
 - Blog posts — create, read, update, delete
 - Comments on posts — create, read, update
 - HTTP session-based auth (server-side session after passkey verification)
 - Fully reactive Angular UI with signals
 
-## Prerequisites
+## Local development setup
 
+### Prerequisites
 - Java 21+
 - Node 20+
-- PostgreSQL 17 running on `localhost:5432`
+- Docker + Docker Compose
+- A Gmail account with 2FA enabled (for email OTP recovery)
 - A browser with WebAuthn support (Chrome, Safari, Firefox — all modern versions)
-
-## Getting started
 
 ### 1. Clone the repo
 ```bash
@@ -45,45 +46,60 @@ git clone https://github.com/daniellaera/spring-blog-app.git
 cd spring-blog-app
 ```
 
-### 2. Start PostgreSQL
-
-Start a local PostgreSQL instance and create the database:
-
-```sql
-CREATE DATABASE testdb;
-CREATE USER testuser WITH PASSWORD 'testpass';
-GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
+### 2. Configure the backend
+```bash
+cp backend/src/main/resources/application-dev.yml.example \
+   backend/src/main/resources/application-dev.yml
 ```
-
-Or with Docker (one-off):
 
 ```bash
-docker run -d \
-  --name blog-postgres \
-  -e POSTGRES_DB=testdb \
-  -e POSTGRES_USER=testuser \
-  -e POSTGRES_PASSWORD=testpass \
-  -p 5432:5432 \
-  postgres:17
+cp backend/src/main/resources/application-dev.yml.example \
+   backend/src/main/resources/application-dev.yml
 ```
 
-### 3. Run the backend
+Then open `application-dev.yml` and replace every placeholder:
+- `YOUR_DB_PASSWORD` → your PostgreSQL password
+- `YOUR_GMAIL@gmail.com` → your Gmail address
+- `YOUR_16_CHAR_APP_PASSWORD` → your Gmail App Password
+- Any other `YOUR_*` values
+
+> `application-dev.yml` is gitignored — it will never be committed.
+> `application-dev.yml.example` is the safe template to track in git.
+
+### 3. Generate a Gmail App Password
+
+Required for the account recovery email OTP feature:
+1. Go to myaccount.google.com
+2. Security → 2-Step Verification (must be enabled first)
+3. App passwords → Generate
+4. Or go directly to: https://myaccount.google.com/apppasswords
+5. Copy the 16-character password into `application-dev.yml`
+
+### 4. Start the database
+```bash
+docker-compose -f docker-compose.db.yml up -d
+```
+
+### 5. Start the backend
 ```bash
 cd backend
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-Backend runs on http://localhost:8080.
-Flyway runs all 9 migrations and seeds demo data automatically on startup.
+Flyway runs automatically on startup:
+- Creates all tables
+- Seeds demo users (daniel, alice)
 
-### 4. Run the frontend
+> Note: demo users have no passkeys — register one at `/register`
+
+### 6. Start the frontend
 ```bash
 cd frontend
 npm install
 ng serve
 ```
 
-Frontend runs on http://localhost:4200.
+App runs at http://localhost:4200
 
 ## Passkey flow
 
@@ -100,6 +116,20 @@ Frontend runs on http://localhost:4200.
 4. Backend verifies signature and creates a server-side session (`POST /login/verify`)
 5. Session cookie stored in browser; user redirected to app
 
+## Account recovery flow
+
+When a user loses access to their passkey (deleted from device, new phone, etc):
+
+1. Go to `/login`
+2. Enter username and attempt sign in
+3. Cancel the passkey prompt
+4. Recovery dialog appears automatically
+5. Enter email address
+6. Receive 6-digit OTP by email (in dev mode: check backend logs)
+7. Enter OTP code
+8. Register a new passkey on the current device
+9. Sign in normally
+
 ## API endpoints
 
 ### Auth — Registration
@@ -114,6 +144,12 @@ Frontend runs on http://localhost:4200.
 | POST | /login/start | No | Get authentication challenge |
 | POST | /login/verify | No | Complete authentication, create session |
 | GET | /session/me | Yes | Get current session user |
+
+### Auth — Account Recovery
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | /recovery/start | No | Send OTP to user's registered email |
+| POST | /recovery/verify | No | Verify OTP and enable passkey re-registration |
 
 ### Posts
 | Method | Endpoint | Auth | Description |
@@ -145,7 +181,7 @@ Frontend runs on http://localhost:4200.
 ├── backend/
 │   ├── src/main/java/       Spring Boot app
 │   ├── src/main/resources/
-│   │   └── db/migration/    Flyway SQL migrations (V1–V9)
+│   │   └── db/migration/    Flyway SQL migrations (V1–V10)
 │   └── pom.xml
 └── frontend/
     └── src/app/
@@ -154,6 +190,22 @@ Frontend runs on http://localhost:4200.
         ├── layout/          Navbar
         └── shared/          Pipes, utils
 ```
+
+## Environment files
+
+| File | Committed | Purpose |
+|------|-----------|---------|
+| application.yml | ✅ Yes | Base config, no secrets |
+| application-dev.yml | ❌ No | Local secrets (DB, Gmail) |
+| application-dev.yml.example | ✅ Yes | Template for new developers |
+
+## Security notes
+
+- Passkeys are device-bound — no passwords stored anywhere
+- This app uses server-side sessions — no JWT tokens
+- OTP codes expire after 10 minutes and are single-use
+- Gmail credentials are never committed to git
+- `application-dev.yml` is in `.gitignore`
 
 ## Running tests
 

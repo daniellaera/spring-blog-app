@@ -16,10 +16,10 @@
           [(ngModel)]="username"
           placeholder="Enter your username"
           class="w-full"
-          [class.ng-invalid]="usernameError"
-          [class.ng-dirty]="usernameError" />
-        @if (usernameError) {
-          <small class="text-red-500">{{ usernameError }}</small>
+          [class.ng-invalid]="usernameTouched && !username.trim()"
+          [class.ng-dirty]="usernameTouched && !username.trim()" />
+        @if (usernameTouched && !username.trim()) {
+          <small class="text-red-500">Username is required</small>
         }
       </div>
 
@@ -29,6 +29,7 @@
         styleClass="w-full mb-2"
         size="large"
         [loading]="loading"
+        [disabled]="!username.trim()"
         (onClick)="signInWithPasskey()" />
 
       <p class="text-center text-xs text-color-secondary mt-2 mb-0">
@@ -46,5 +47,105 @@
     </div>
   </div>
 </div>
+
+<p-dialog
+  header="Account Recovery"
+  [(visible)]="recoveryVisible"
+  [modal]="true"
+  [closable]="true"
+  [style]="{width: '460px'}"
+  (onHide)="recoveryStep = 0">
+
+  @if (recoveryStep === 1) {
+    <div class="flex flex-column gap-4 pt-2">
+      <div class="flex flex-column align-items-center text-center gap-2 mb-2">
+        <i class="pi pi-lock text-primary" style="font-size:2.5rem"></i>
+        <h3 class="text-xl font-bold m-0">Recover your account</h3>
+        <p class="text-color-secondary text-sm m-0">
+          Enter your email to receive a one-time recovery code.
+        </p>
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label class="font-medium text-sm">Username</label>
+        <input pInputText [(ngModel)]="recoveryUsername"
+               class="w-full" [readonly]="true" />
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label class="font-medium text-sm">Email address</label>
+        <input pInputText [(ngModel)]="recoveryEmail"
+               placeholder="your@email.com"
+               class="w-full" type="email" />
+      </div>
+
+      <p-button
+        label="Send recovery code"
+        icon="pi pi-send"
+        styleClass="w-full"
+        [loading]="recoveryLoading"
+        [disabled]="!recoveryEmail.trim()"
+        (onClick)="sendRecoveryCode()" />
+    </div>
+  }
+
+  @if (recoveryStep === 2) {
+    <div class="flex flex-column gap-4 pt-2">
+      <div class="flex flex-column align-items-center text-center gap-2 mb-2">
+        <i class="pi pi-envelope text-primary" style="font-size:2.5rem"></i>
+        <h3 class="text-xl font-bold m-0">Check your email</h3>
+        <p class="text-color-secondary text-sm m-0">
+          Enter the 6-digit code we sent to
+          <strong>{{ recoveryEmail }}</strong>
+        </p>
+      </div>
+
+      @if (devOtp) {
+        <p-message
+          severity="warn"
+          text="DEV MODE — OTP: {{ devOtp }}"
+          styleClass="w-full" />
+      }
+
+      <input pInputText
+             [(ngModel)]="recoveryCode"
+             placeholder="000000"
+             class="w-full text-center text-3xl font-bold"
+             style="letter-spacing:.5rem"
+             maxlength="6" />
+
+      <p-button
+        label="Verify & register new passkey"
+        icon="pi pi-key"
+        styleClass="w-full"
+        size="large"
+        [loading]="recoveryLoading"
+        [disabled]="recoveryCode.length < 6"
+        (onClick)="verifyAndReregister()" />
+
+      <p-button
+        label="Resend code"
+        [text]="true"
+        styleClass="w-full"
+        (onClick)="recoveryStep = 1" />
+    </div>
+  }
+
+  @if (recoveryStep === 3) {
+    <div class="flex flex-column align-items-center text-center gap-3 py-4">
+      <i class="pi pi-check-circle text-green-500"
+         style="font-size:4rem"></i>
+      <h3 class="text-xl font-bold m-0">Passkey registered!</h3>
+      <p class="text-color-secondary m-0">
+        Your new passkey is ready. You can now sign in.
+      </p>
+      <p-button
+        label="Sign in now"
+        icon="pi pi-sign-in"
+        styleClass="w-full mt-2"
+        (onClick)="recoveryStep = 0" />
+    </div>
+  }
+</p-dialog>
 
 <p-toast />

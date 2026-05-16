@@ -34,10 +34,10 @@
               [(ngModel)]="username"
               placeholder="Choose a username"
               class="w-full"
-              [class.ng-invalid]="usernameError"
-              [class.ng-dirty]="usernameError" />
-            @if (usernameError) {
-              <small class="text-red-500">{{ usernameError }}</small>
+              [class.ng-invalid]="usernameTouched && !username.trim()"
+              [class.ng-dirty]="usernameTouched && !username.trim()" />
+            @if (usernameTouched && !username.trim()) {
+              <small class="text-red-500">Username is required</small>
             }
           </div>
 
@@ -48,6 +48,7 @@
             styleClass="w-full"
             size="large"
             [loading]="loading"
+            [disabled]="!username.trim()"
             (onClick)="createAccount()" />
         </div>
       }

@@ -29,4 +29,7 @@ public class User {
     private byte[] userHandle;
 
     private boolean registrationComplete;
+
+    @Column(nullable = true)
+    private String email;
 }

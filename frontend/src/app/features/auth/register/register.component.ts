@@ -24,7 +24,7 @@ import { MessageService } from 'primeng/api';
 export class RegisterComponent {
   step = 1;
   username = '';
-  usernameError = '';
+  usernameTouched = false;
   loading = false;
 
   constructor(
@@ -35,10 +35,9 @@ export class RegisterComponent {
 
   createAccount(): void {
     if (!this.username.trim()) {
-      this.usernameError = 'Username is required';
+      this.usernameTouched = true;
       return;
     }
-    this.usernameError = '';
     this.step = 2;
   }
 

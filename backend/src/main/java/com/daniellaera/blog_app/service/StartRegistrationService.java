@@ -51,6 +51,18 @@ public class StartRegistrationService {
                 userIdentity, publicKeyCredentialParameters, 60000, "none", Collections.emptyList(), authenticatorSelection);
     }
 
+    public StartRegisterResponseResource startRegistrationForExistingUser(User user) throws JsonProcessingException {
+        UserIdentity userIdentity = createUserIdentity(user.getUsername(), bytesToByteArray(user.getUserHandle()));
+        StartRegistrationOptions startRegistrationOptions = createStartRegistrationOptions(userIdentity);
+        PublicKeyCredentialCreationOptions pbOptions = relyingParty.startRegistration(startRegistrationOptions);
+
+        user.setPublicKeyJson(pbOptions.toJson());
+        userRepository.save(user);
+
+        return new StartRegisterResponseResource(pbOptions.getChallenge().getBase64Url(), relyingPartyIdentity,
+                userIdentity, publicKeyCredentialParameters, 60000, "none", Collections.emptyList(), authenticatorSelection);
+    }
+
     private UserIdentity createUserIdentity(String username, ByteArray userHandle) {
         return UserIdentity.builder()
                 .name(username)

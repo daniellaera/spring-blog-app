@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v3/post/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/v3/comment/**").authenticated()
                 .requestMatchers(HttpMethod.PATCH, "/api/v3/comment/**").authenticated()
-                .requestMatchers("/login/**", "/session/**", "/register/**", "/api/user/**", "/test/**").permitAll()
+                .requestMatchers("/login/**", "/session/**", "/register/**", "/recovery/**", "/api/user/**", "/test/**").permitAll()
                 .anyRequest().permitAll()
             );
         return http.build();

@@ -1,9 +1,12 @@
 spring:
+  docker:
+    compose:
+      file: docker-compose.db.yml
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${GMAIL_USERNAME}
-    password: ${GMAIL_APP_PASSWORD}
+    username: your-gmail@gmail.com
+    password: your-16-char-app-password
     properties:
       "[mail.smtp.auth]": true
       "[mail.smtp.starttls.enable]": true
@@ -12,9 +15,9 @@ spring:
       "[mail.smtp.timeout]": 3000
       "[mail.smtp.writetimeout]": 5000
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: testuser
+    password: your-db-password
     driver-class-name: org.postgresql.Driver
   flyway:
     enabled: true
@@ -22,10 +25,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-  threads:
-    virtual:
-      enabled: true
+    # show-sql: true
 
 webauthn:
-  rp-id: ${WEBAUTHN_RP_ID:localhost}
-  origin: ${WEBAUTHN_ORIGIN:http://localhost:4200}
+  rp-id: localhost
+  origin: http://localhost:4200
